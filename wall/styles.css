@@ -1,0 +1,281 @@
+/* ========================================================
+   Ice Cream Batch Tracker - Responsive Laptop & Mobile Styles
+   ======================================================== */
+
+/* Prevent double-tap zoom on touch screens */
+button {
+  touch-action: manipulation;
+}
+
+/* Wall's Creamy Vanilla & Strawberry Swirl Background */
+body.walls-theme-bg {
+  background-color: #FFFBF7;
+  background-image:
+    radial-gradient(at 12% 8%, rgba(228, 0, 43, 0.05) 0px, transparent 45%),
+    radial-gradient(at 88% 15%, rgba(56, 189, 248, 0.06) 0px, transparent 45%),
+    radial-gradient(at 50% 90%, rgba(251, 191, 36, 0.05) 0px, transparent 50%);
+}
+
+/* Wall's Shop Awning Scallop Border under Header */
+.walls-awning-border {
+  height: 6px;
+  background: repeating-linear-gradient(
+    90deg,
+    #FFFFFF 0px,
+    #FFFFFF 18px,
+    #FFD1DC 18px,
+    #FFD1DC 36px
+  );
+  opacity: 0.85;
+}
+
+/* Numpad Button Styling - Ice Cream Scoop Soft 3D Feel */
+.numpad-btn {
+  height: 58px;
+  background: linear-gradient(180deg, #FFFFFF 0%, #FFF5F7 100%);
+  border: 1.5px solid #FECDD3;
+  border-radius: 1.15rem;
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 1.35rem;
+  font-weight: 700;
+  color: #881337;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 3px 0 #FDA4AF, 0 2px 6px rgba(228, 0, 43, 0.06);
+  transition: all 0.1s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+  cursor: pointer;
+}
+
+@media (min-width: 640px) {
+  .numpad-btn {
+    height: 64px;
+    font-size: 1.5rem;
+  }
+}
+
+.numpad-btn:hover {
+  background: linear-gradient(180deg, #FFF1F2 0%, #FFE4E6 100%);
+  border-color: #FB7185;
+}
+
+.numpad-btn:active {
+  transform: translateY(2px) scale(0.97);
+  box-shadow: 0 1px 0 #FDA4AF;
+}
+
+/* Wall's Bell Ringing Animation */
+@keyframes bellRing {
+  0%, 100% { transform: rotate(0deg); }
+  15% { transform: rotate(16deg); }
+  30% { transform: rotate(-14deg); }
+  45% { transform: rotate(10deg); }
+  60% { transform: rotate(-8deg); }
+  75% { transform: rotate(4deg); }
+}
+
+.walls-bell-anim {
+  display: inline-block;
+  animation: bellRing 2s infinite ease-in-out;
+  transform-origin: top center;
+}
+
+/* Freezer Ice Shimmer Effect on Progress Bar */
+@keyframes iceShimmer {
+  0% { background-position: 0% 50%; }
+  100% { background-position: 200% 50%; }
+}
+
+.freezer-bar-shimmer {
+  background-size: 200% 200%;
+  animation: iceShimmer 4s linear infinite;
+}
+
+/* Mobile Bottom Navigation Active Tab */
+.mob-nav-btn.active {
+  color: #E11D48 !important;
+}
+.mob-nav-btn.active i {
+  transform: translateY(-2px);
+  transition: transform 0.2s ease;
+}
+
+/* Desktop Header Navigation Active Tab */
+.desk-nav-btn.active {
+  background-color: #FFFFFF !important;
+  color: #E11D48 !important;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Modal scale-up animation */
+@keyframes scaleUp {
+  from {
+    opacity: 0;
+    transform: scale(0.92) translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+.animate-scaleUp {
+  animation: scaleUp 0.18s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
+/* Shift Button Selector */
+.shift-btn.active {
+  background-color: hsl(347, 77%, 50%);
+  color: #FFFFFF;
+  border-color: hsl(347, 77%, 50%);
+  box-shadow: 0 4px 12px hsla(347, 77%, 50%, 0.22);
+}
+
+/* Note Quick Tag */
+.note-tag:active {
+  transform: scale(0.95);
+}
+
+/* Bar Chart Smooth Grow */
+@keyframes barGrow {
+  from {
+    height: 0%;
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.chart-bar-anim {
+  animation: barGrow 0.45s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* ========================================================
+   Official A4 Report & Purchase Order Table Styling
+   ======================================================== */
+#a4-report-sheet,
+#po-report-sheet {
+  font-family: 'Prompt', sans-serif;
+  line-height: 1.5;
+  color: #0F172A;
+  -webkit-print-color-adjust: exact;
+  print-color-adjust: exact;
+}
+
+#a4-report-sheet table,
+#po-report-sheet table {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  border: 1.5px solid #334155;
+}
+
+#a4-report-sheet th,
+#po-report-sheet th {
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  line-height: 1.35;
+  vertical-align: middle;
+  border: 1px solid #475569;
+}
+
+#a4-report-sheet td,
+#po-report-sheet td {
+  vertical-align: middle;
+  line-height: 1.45;
+  border: 1px solid #94A3B8;
+  word-wrap: break-word;
+  font-variant-numeric: tabular-nums;
+}
+
+#a4-report-sheet tfoot td,
+#po-report-sheet tfoot td {
+  border-top: 1.5px solid #334155;
+  border-bottom: 1.5px solid #334155;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ========================================================
+   A4 Print Styles for Official Income-Expense Ledger Report
+   ======================================================== */
+@page {
+  size: A4 portrait;
+  margin: 12mm 14mm;
+}
+
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    background: #FFFFFF !important;
+    color: #000000 !important;
+  }
+
+  /* Hide everything except the active A4 Printable Modal */
+  header,
+  main,
+  nav,
+  #toast-container,
+  #close-lot-modal,
+  #config-modal,
+  #edit-cost-modal,
+  #edit-sale-modal,
+  #product-modal,
+  .no-print {
+    display: none !important;
+  }
+
+  #a4-report-modal.hidden,
+  #po-report-modal.hidden {
+    display: none !important;
+  }
+
+  #a4-report-modal:not(.hidden),
+  #po-report-modal:not(.hidden) {
+    position: static !important;
+    display: block !important;
+    background: transparent !important;
+    padding: 0 !important;
+    overflow: visible !important;
+  }
+
+  #a4-report-sheet,
+  #po-report-sheet {
+    width: 100% !important;
+    max-width: none !important;
+    box-shadow: none !important;
+    border: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
+    border-radius: 0 !important;
+  }
+
+  table {
+    page-break-inside: auto;
+  }
+  tr {
+    page-break-inside: avoid;
+    page-break-after: auto;
+  }
+}
