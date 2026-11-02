@@ -1684,78 +1684,106 @@ function switchTab(tabId) {
 // ========================================================
 function getDefaultWallsProducts() {
   return [
-    {
-      id: 'walls-cornetto-classic',
-      name: 'คอร์เนตโต วานิลลา / ช็อกโกแลต',
-      category: 'โคน',
-      pieces_per_box: 24,
-      cost_per_piece: 15.00,
-      retail_price: 20.00
-    },
-    {
-      id: 'walls-cornetto-royale',
-      name: 'คอร์เนตโต รอยัล (ขนาดใหญ่)',
-      category: 'โคน',
-      pieces_per_box: 24,
-      cost_per_piece: 22.50,
-      retail_price: 30.00
-    },
-    {
-      id: 'walls-paddlepop-rainbow',
-      name: 'แพดเดิลป๊อป เรนโบว์ / ทอร์นาโด',
-      category: 'แท่ง',
-      pieces_per_box: 30,
-      cost_per_piece: 11.50,
-      retail_price: 15.00
-    },
-    {
-      id: 'walls-topten-choc',
-      name: 'ท็อปเท็น ช็อกโกแลต / วานิลลา',
-      category: 'แท่ง',
-      pieces_per_box: 28,
-      cost_per_piece: 11.50,
-      retail_price: 15.00
-    },
-    {
-      id: 'walls-asian-delight',
-      name: 'เอเชียนดีไลท์ (เผือก / กะทิ / ถั่วดำ)',
-      category: 'แท่ง',
-      pieces_per_box: 30,
-      cost_per_piece: 11.50,
-      retail_price: 15.00
-    },
-    {
-      id: 'walls-cup-classic',
-      name: 'ไอศกรีมถ้วยวอลล์ (ช็อกชิพ / สตรอว์เบอร์รี)',
-      category: 'ถ้วย',
-      pieces_per_box: 24,
-      cost_per_piece: 15.00,
-      retail_price: 20.00
-    },
-    {
-      id: 'walls-sandwich',
-      name: 'วอลล์ แซนด์วิช วานิลลา-ช็อกโกแลต',
-      category: 'แซนด์วิช/อื่นๆ',
-      pieces_per_box: 24,
-      cost_per_piece: 15.00,
-      retail_price: 20.00
-    },
-    {
-      id: 'walls-magnum-classic',
-      name: 'แม็กนั่ม คลาสสิค / อัลมอนด์',
-      category: 'แท่ง',
-      pieces_per_box: 24,
-      cost_per_piece: 32.00,
-      retail_price: 40.00
-    },
-    {
-      id: 'walls-calippo-lemon',
-      name: 'คาลิปโป เลมอน / โคล่า (หลอดบีบ)',
-      category: 'แท่ง',
-      pieces_per_box: 24,
-      cost_per_piece: 15.00,
-      retail_price: 20.00
-    }
+    // --- 1. กลุ่มแพดเดิลป๊อป (6 รายการ) ---
+    { id: 'paddlepop-big-rocket', name: 'บิ๊ก ร็อกเก็ต เจลลี่', category: 'แพดเดิลป๊อป', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-choc-lava', name: 'ช็อก ลาวา', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-rainbow', name: 'เรนโบว์', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-dragon-pop', name: 'ดราก้อน ป๊อป', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-ovaltine', name: 'โอวัลติน', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-octopus', name: 'ออคโตปุส', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+
+    // --- 2. กลุ่มวอลล์ (39 รายการ) ---
+    { id: 'walls-fruity', name: 'ฟรุตตี้', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, retail_price: 5.00 },
+    { id: 'walls-cola', name: 'โคล่า', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, retail_price: 5.00 },
+    { id: 'walls-mini-football', name: 'มินิ ฟุตบอล (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-little-ghost', name: 'ลิตเติ้ล โกสท์', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-cone-hokkaido', name: 'วอลล์โคน นมฮอกไกโด', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-cone-chocolate', name: 'วอลล์โคน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-strawberry', name: 'มินิโมจิ สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-vanilla', name: 'มินิโมจิ วานิลลา', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-chocolate', name: 'มินิโมจิ ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-giant-twin-cola', name: 'ยักษ์คู่ กลิ่นโคล่า', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-giant-twin-orange', name: 'ยักษ์คู่ กลิ่นส้ม', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-watermelon', name: 'แตงโม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-cookie-cream', name: 'คุกกี้ แอนด์ ครีม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'walls-minion-caramel', name: 'มินเนี่ยน คาราเมล (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-buzz-rocket-pop', name: 'บัซ ร็อกเก็ต ป๊อป (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-iceball-watermelon', name: 'ไอซ์บอลล์ แตงโม (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-shots-lime', name: 'ช็อทส์ ไลม์ (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-shots-fruity', name: 'ช็อทส์ ฟรุตตี้', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.05, retail_price: 15.00 },
+    { id: 'walls-sweetheart', name: 'สวีตฮาร์ท', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-waffle-strawberry', name: 'วาฟเฟิล สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-waffle-milk', name: 'วาฟเฟิล รสนม', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-twister-grape-lychee', name: 'ทวิสเตอร์ องุ่น ลิ้นจี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-fruity-max', name: 'ฟรุตตี้ แม็กซ์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-solero-split-lime', name: 'โซเลโร สปลิท รสมะนาว', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
+    { id: 'walls-calippo-slush-orange', name: 'คาลิปโป สลัช ครัช ส้ม (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-lava-delight', name: 'ลาวา ดีไลท์ (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-mochi-milky', name: 'โมจิ มิลค์กี้', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-calippo-cola-lemon', name: 'คาลิปโป โคล่า เลมอน', category: 'วอลล์', pieces_per_box: 28, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-bites-time-vanilla-caramel', name: 'ไบท์ส ไทม์ วานิลลา และ คาราเมล', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-bites-time-strawberry', name: 'ไบท์ส ไทม์ สตรอเบอร์รี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-viennetta-chocolate', name: 'เวียนเน็ตตา ช็อกโกแลต (ใหม่)', category: 'วอลล์', pieces_per_box: 18, cost_per_piece: 24.12, retail_price: 30.00 },
+    { id: 'walls-ovaltine-whitemalt', name: 'โอวัลติน ไวท์มอลต์ ครันชี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 24.12, retail_price: 30.00 },
+    { id: 'walls-iceball-lemon', name: 'ไอซ์บอลล์ เลมอน (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
+    { id: 'walls-iceball-grape', name: 'ไอซ์บอลล์ องุ่น', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
+    { id: 'walls-topten-vanilla', name: 'ท็อปเทน วานิลลา', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
+    { id: 'walls-topten-chocolate', name: 'ท็อปเทน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
+    { id: 'walls-topten-cornflakes', name: 'ท็อปเทน มิลค์ & คอร์นเฟลกส์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
+    { id: 'walls-topten-extra-strawberry', name: 'ท็อปเทน เอ็กซ์ตร้า สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, retail_price: 25.00 },
+    { id: 'walls-topten-extra-chocolate', name: 'ท็อปเทน เอ็กซ์ตร้า ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, retail_price: 25.00 },
+
+    // --- 3. กลุ่มเอเชียน ดีไลท์ (3 รายการ) ---
+    { id: 'walls-asian-durian', name: 'ทุเรียนหมอนทอง', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-asian-taro', name: 'เผือก', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-asian-blackbean', name: 'ถั่วดำ', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+
+    // --- 4. กลุ่มวอลล์คัพ (7 รายการ) ---
+    { id: 'walls-cup-chocchip', name: 'ช็อกชิป', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-chocolate', name: 'ช็อกโกแลต', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-vanilla', name: 'วานิลลา', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-lime', name: 'มะนาว', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-coconut', name: 'กะทิ', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-ovaltine', name: 'โอวัลติน', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-cup-butterbear-toy', name: 'บัตเตอร์แบร์ ทอย (ใหม่)', category: 'วอลล์คัพ', pieces_per_box: 20, cost_per_piece: 32.16, retail_price: 40.00 },
+
+    // --- 5. กลุ่มคอร์นเนตโต (7 รายการ) ---
+    { id: 'cornetto-classic-vanilla', name: 'คลาสสิก วานิลลา', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'cornetto-classic-darkchoc', name: 'คลาสสิก ดาร์ค ช็อกโกแลต บราวนี่', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'cornetto-classic-strawberry', name: 'คลาสสิก สตรอเบอร์รี่ คุกกี้', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'cornetto-classic-cookie-cream', name: 'คลาสสิก คุกกี้ แอนด์ ครีม', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'cornetto-muscat-yogurt', name: 'องุ่น มัสแคท & โยเกิร์ต (ใหม่)', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'cornetto-royale-choclove', name: 'รอยัล ช็อกโกเลิฟ', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
+    { id: 'cornetto-royale-strawberry', name: 'รอยัล สตรอเบอร์รี่', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
+
+    // --- 6. กลุ่มแม็กนั่ม (10 รายการ) ---
+    { id: 'magnum-almond', name: 'อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
+    { id: 'magnum-classic', name: 'คลาสสิค', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
+    { id: 'magnum-white-almond', name: 'ไวท์ อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
+    { id: 'magnum-choc-luxe', name: 'ช็อกโกแลต ลักซ์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, retail_price: 50.00 },
+    { id: 'magnum-matcha-crumble', name: 'มัทฉะ ครัมเบิ้ล', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
+    { id: 'magnum-pistachio', name: 'แม็กนั่ม พิสตาชิโอ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, retail_price: 50.00 },
+    { id: 'magnum-cone-trio', name: 'แม็กนั่ม โคนทริโอ เพรสทีจ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 18, cost_per_piece: 40.20, retail_price: 50.00 },
+    { id: 'magnum-mini-almond-pack6', name: 'แม็กนั่ม มินิ อัลมอนด์ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.19, retail_price: 199.00 },
+    { id: 'magnum-mini-brownie-pack6', name: 'แม็กนั่ม มินิ บราวนี่ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.10, retail_price: 199.00 },
+    { id: 'magnum-mini-pistachio-pack6', name: 'แม็กนั่ม มินิ พิสตาชิโอ แพ็ค 6 (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.00, retail_price: 199.00 },
+
+    // --- 7. กลุ่มกล่องตัก / ดีลักซ์ (15 รายการ) ---
+    { id: 'walls-classic-tub-small-2in1', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องเล็ก)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 8, cost_per_piece: 39.39, retail_price: 49.00 },
+    { id: 'walls-classic-tub-choc-chocchip', name: 'ช็อกโกแลต ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
+    { id: 'walls-classic-tub-lime-delight', name: 'มะนาว ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
+    { id: 'walls-classic-tub-chocchip', name: 'ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
+    { id: 'walls-classic-tub-vanilla', name: 'วานิลลา (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
+    { id: 'walls-classic-tub-ruammit', name: 'รวมมิตร (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
+    { id: 'walls-classic-tub-2in1-chocchip-choc', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-neapolitan', name: '3 in 1 นีโอโพลิแทน (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-triple-choc', name: '3 in 1 ทริปเปิ้ล ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-triple-delight', name: '3 in 1 ทริปเปิ้ล ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
+    { id: 'walls-selection-cookies-cream', name: 'ซีเล็คชั่น คุกกี้ แอนด์ ครีม', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 4, cost_per_piece: 71.60, retail_price: 89.00 },
+    { id: 'walls-deluxe-vanilla', name: 'ดีลักซ์ วานิลลา (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
+    { id: 'walls-deluxe-strawberry', name: 'ดีลักซ์ สตรอเบอร์รี (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
+    { id: 'walls-deluxe-choc-brownie', name: 'ดีลักซ์ ช็อกโกแลต บราวนี่ (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
+    { id: 'walls-deluxe-caramel', name: 'ดีลักซ์ คาราเมล (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 }
   ];
 }
 
@@ -1783,21 +1811,25 @@ async function loadProductCatalog() {
     }
   }
 
-  if (!loaded) {
+  const CATALOG_VERSION = 'v2_official_87_items';
+  const currentCatalogVer = localStorage.getItem('walls_catalog_version');
+
+  if (!loaded || currentCatalogVer !== CATALOG_VERSION || (Array.isArray(loaded) && loaded.length < 50)) {
     try {
       const localRaw = localStorage.getItem(STORAGE_KEYS.LOCAL_PRODUCTS);
-      if (localRaw) {
+      if (localRaw && currentCatalogVer === CATALOG_VERSION) {
         const parsed = JSON.parse(localRaw);
-        if (Array.isArray(parsed) && parsed.length > 0) {
+        if (Array.isArray(parsed) && parsed.length >= 80) {
           loaded = parsed;
         }
       }
     } catch (e) {}
   }
 
-  if (!loaded || loaded.length === 0) {
+  if (!loaded || loaded.length < 50) {
     loaded = getDefaultWallsProducts();
     localStorage.setItem(STORAGE_KEYS.LOCAL_PRODUCTS, JSON.stringify(loaded));
+    localStorage.setItem('walls_catalog_version', CATALOG_VERSION);
   }
 
   productCatalog = loaded;
@@ -2545,33 +2577,29 @@ function getWallsFlavorBadge(prod) {
   const name = (prod.name || '').toLowerCase();
   const cat = prod.category || 'ทั่วไป';
 
-  if (name.includes('คอร์เนตโต') || name.includes('cornetto')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-rose-600 to-blue-700 text-white font-bold shadow-xs">🍦 Cornetto โคนกรอบช็อกปลายโคน</span>`;
+  if (cat === 'แพดเดิลป๊อป' || name.includes('แพดเดิลป๊อป') || name.includes('paddle') || name.includes('ป๊อป') || name.includes('เจลลี่')) {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 via-amber-400 to-sky-500 text-white font-extrabold shadow-xs">🦁🌈 Paddle Pop</span>`;
   }
-  if (name.includes('แพดเดิลป๊อป') || name.includes('paddle')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-pink-500 via-amber-400 to-sky-500 text-white font-extrabold shadow-xs">🦁🌈 Paddle Pop สิงโตแม็กซ์</span>`;
+  if (cat === 'คอร์นเนตโต' || name.includes('คอร์เนตโต') || name.includes('cornetto')) {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-rose-600 to-blue-700 text-white font-bold shadow-xs">🍦 Cornetto โคน</span>`;
   }
-  if (name.includes('แม็กนั่ม') || name.includes('magnum')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-900 via-yellow-800 to-amber-600 text-amber-100 font-bold border border-amber-400/50 shadow-xs">🍫✨ Magnum ช็อกเบลเยียม</span>`;
+  if (cat === 'แม็กนั่ม' || name.includes('แม็กนั่ม') || name.includes('magnum')) {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-amber-900 via-yellow-800 to-amber-600 text-amber-100 font-bold border border-amber-400/50 shadow-xs">🍫✨ Magnum ช็อกแท้</span>`;
   }
-  if (name.includes('คาลิปโป') || name.includes('calippo')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-gradient-to-r from-lime-500 to-emerald-600 text-white font-bold shadow-xs">🍋🧊 Calippo หลอดบีบชื่นใจ</span>`;
+  if (cat === 'เอเชียน ดีไลท์' || name.includes('เอเชียน') || name.includes('กะทิ') || name.includes('ทุเรียน')) {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">🥥🌿 Asian Delight</span>`;
   }
-  if (name.includes('เอเชียน') || name.includes('กะทิ')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 border border-emerald-300 font-bold">🥥🌿 Asian Delight กะทิแท้</span>`;
+  if (cat === 'วอลล์คัพ' || name.includes('ถ้วย')) {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-700 border border-pink-200 font-bold">🍨🍓 Wall's Cup ถ้วย</span>`;
+  }
+  if (cat === 'กล่องตัก/ดีลักซ์') {
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-indigo-100 text-indigo-800 border border-indigo-200 font-bold">📦 กล่องตัก/ดีลักซ์</span>`;
   }
   if (name.includes('ท็อปเท็น') || name.includes('top ten')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold">🥜🍫 Top Ten เคลือบช็อกถั่ว</span>`;
-  }
-  if (cat === 'ถ้วย' || name.includes('ถ้วย')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-pink-100 text-pink-700 border border-pink-200 font-bold">🍨🍓 Wall's Cup ไอศกรีมถ้วย</span>`;
-  }
-  if (cat === 'แซนด์วิช/อื่นๆ' || name.includes('แซนด์วิช')) {
-    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-orange-100 text-orange-800 border border-orange-200 font-bold">🥪🍦 Wall's Sandwich</span>`;
+    return `<span class="inline-flex items-center gap-1 text-[10px] px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 font-bold">🥜🍫 Top Ten</span>`;
   }
 
-  const fallbackIcons = { 'โคน': '🍦', 'แท่ง': '🍭', 'ถ้วย': '🍨', 'แซนด์วิช/อื่นๆ': '🥪' };
-  return `<span class="inline-block text-[10px] px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">${fallbackIcons[cat] || '🍦'} ${escapeHtml(cat)}</span>`;
+  return `<span class="inline-block text-[10px] px-2.5 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200 font-bold">🍦 วอลล์</span>`;
 }
 
 let wallsSoundEnabled = localStorage.getItem('walls_sound_enabled') !== 'false';
