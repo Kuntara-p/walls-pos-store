@@ -1627,6 +1627,264 @@ function clearLocalDataAndReset() {
   setTimeout(() => window.location.reload(), 800);
 }
 
+async function triggerFactoryReset() {
+  const confirmMsg = "⚠️ คำเตือน: คุณต้องการ 'รีเซ็ตระบบทั้งหมดเพื่อเริ่มใช้งานจริง (Factory Reset)' ใช่หรือไม่?\n\n- ประวัติยอดขายรายวันทั้งหมดจะถูกลบ\n- ประวัติลอตทั้งหมดจะถูกล้าง\n- ระบบจะตั้งต้นเป็น 'ลอตที่ 1' (ต้นทุน ฿5,000 / เงินทอน ฿500 / ยอดขาย ฿0) ใหม่เอี่ยม\n\nกด ตกลง (OK) เพื่อยืนยันการล้างข้อมูล";
+  if (!confirm(confirmMsg)) return;
+
+  const confirmText = prompt('เพื่อความปลอดภัยสูงสุด กรุณาพิมพ์คำว่า "RESET" หรือ "ล้างข้อมูล" ในช่องด้านล่างเพื่อยืนยัน:');
+  if (!confirmText || (confirmText.trim().toUpperCase() !== 'RESET' && confirmText.trim() !== 'ล้างข้อมูล')) {
+    showToast('ยกเลิกการรีเซ็ตระบบ (คำยืนยันไม่ถูกต้อง)', 'info');
+    return;
+  }
+
+  showToast('กำลังทำการ Factory Reset ล้างข้อมูลระบบทั้งหมด...', 'info');
+
+  // 1. Clear Online Supabase DB if connected
+  if (!isOfflineMode && supabaseClient) {
+    try {
+      // Delete all daily_sales
+      await supabaseClient
+        .from('daily_sales')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      // Delete all lots
+      await supabaseClient
+        .from('lots')
+        .delete()
+        .neq('id', '00000000-0000-0000-0000-000000000000');
+
+      // Insert fresh active Lot 1
+      await supabaseClient
+        .from('lots')
+        .insert([{
+          cost: 5000,
+          float_money: 500,
+          total_collected: 0,
+          status: 'active'
+        }]);
+    } catch (err) {
+      console.error('Factory reset error on Supabase:', err);
+      showToast('เกิดข้อผิดพลาดในการล้างฐานข้อมูล Supabase', 'error');
+    }
+  }
+
+  // 2. Clear Local Storage
+  localStorage.removeItem(STORAGE_KEYS.LOCAL_LOTS);
+  localStorage.removeItem(STORAGE_KEYS.LOCAL_SALES);
+  localStorage.removeItem(STORAGE_KEYS.LOCAL_ORDER_DRAFT);
+  localStorage.removeItem(STORAGE_KEYS.LOCAL_PO_META);
+
+  closeModal('config-modal');
+  showToast('🎉 รีเซ็ตระบบทั้งหมดสำเร็จแล้ว! กำลังเริ่มลอตที่ 1 ใหม่...', 'success');
+  setTimeout(() => window.location.reload(), 1000);
+}
+
+// ========================================================
+// 4.6 System Backup & Restore (.json)
+// ========================================================
+async function downloadSystemBackupJSON() {
+  try {
+    showToast('กำลังเตรียมข้อมูลสำรองระบบ...', 'info');
+
+    let allLots = [];
+    let allSales = [];
+
+    // Fetch from Supabase if online
+    if (!isOfflineMode && supabaseClient) {
+      try {
+        const { data: lotsData, error: lotErr } = await supabaseClient
+          .from('lots')
+          .select('*')
+          .order('created_at', { ascending: true });
+        if (lotErr) throw lotErr;
+        allLots = lotsData || [];
+
+        const { data: salesData, error: saleErr } = await supabaseClient
+          .from('daily_sales')
+          .select('*')
+          .order('created_at', { ascending: true });
+        if (saleErr) throw saleErr;
+        allSales = salesData || [];
+      } catch (sbErr) {
+        console.warn('Fallback to local data for backup:', sbErr);
+        allLots = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_LOTS) || '[]');
+        allSales = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_SALES) || '[]');
+      }
+    } else {
+      allLots = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_LOTS) || '[]');
+      allSales = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_SALES) || '[]');
+    }
+
+    const backupPayload = {
+      app: "Wall's Ice Cream POS & Batch Tracker",
+      version: '2.0',
+      exported_at: new Date().toISOString(),
+      summary: {
+        total_lots: allLots.length,
+        total_sales_records: allSales.length,
+        catalog_products_count: productCatalog.length
+      },
+      lots: allLots,
+      daily_sales: allSales,
+      products: productCatalog,
+      order_draft: orderDraftQuantities || {},
+      po_meta: JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_PO_META) || '{}')
+    };
+
+    const jsonString = JSON.stringify(backupPayload, null, 2);
+    const blob = new Blob([jsonString], { type: 'application/json;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    const dateFormatted = new Date().toISOString().slice(0, 10);
+    a.href = url;
+    a.download = `walls_pos_backup_${dateFormatted}.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    showToast(`ดาวน์โหลดไฟล์สำรอง "${a.download}" สำเร็จแล้ว!`, 'success');
+  } catch (err) {
+    console.error('Backup download error:', err);
+    showToast('เกิดข้อผิดพลาดในการสร้างไฟล์สำรองข้อมูล', 'error');
+  }
+}
+
+function triggerRestoreSystem() {
+  const fileInput = document.getElementById('restore-file-input');
+  if (fileInput) {
+    fileInput.value = ''; // reset previous file selection
+    fileInput.click();
+  }
+}
+
+async function handleRestoreFileSelected(event) {
+  const file = event.target.files && event.target.files[0];
+  if (!file) return;
+
+  if (!file.name.endsWith('.json')) {
+    showToast('กรุณาเลือกไฟล์สำรองนามสกุล .json เท่านั้น', 'error');
+    event.target.value = '';
+    return;
+  }
+
+  const reader = new FileReader();
+  reader.onload = async (e) => {
+    try {
+      const content = e.target.result;
+      const parsed = JSON.parse(content);
+
+      // Validate structure
+      if (!parsed || !Array.isArray(parsed.lots) || !Array.isArray(parsed.daily_sales)) {
+        showToast('ไฟล์ไม่ถูกต้อง: โครงสร้างข้อมูลไม่ตรงกับไฟล์สำรองของระบบ Wall\'s POS', 'error');
+        event.target.value = '';
+        return;
+      }
+
+      const lotCount = parsed.lots.length;
+      const saleCount = parsed.daily_sales.length;
+      const backupDateStr = parsed.exported_at
+        ? new Date(parsed.exported_at).toLocaleString('th-TH')
+        : 'ไม่ระบุ';
+
+      const confirmMsg = `⚠️ ยืนยันการกู้คืนข้อมูลระบบ (Restore Data)?\n\n` +
+        `📅 วันที่บันทึกสำรอง: ${backupDateStr}\n` +
+        `📦 จำนวนลอต: ${lotCount} ลอต\n` +
+        `🧾 จำนวนยอดขายรายวัน: ${saleCount} รายการ\n\n` +
+        `คำเตือน: ข้อมูลในระบบปัจจุบันทั้งหมดจะถูกแทนที่ด้วยข้อมูลจากไฟล์นี้ ยืนยันกด "ตกลง" (OK)`;
+
+      if (!confirm(confirmMsg)) {
+        event.target.value = '';
+        return;
+      }
+
+      showToast('กำลังกู้คืนข้อมูลระบบ กรุณารอสักครู่...', 'info');
+
+      // Cleaned lots
+      const cleanedLots = parsed.lots.map(l => ({
+        id: l.id,
+        cost: parseFloat(l.cost) || 5000,
+        float_money: parseFloat(l.float_money) || 500,
+        total_collected: parseFloat(l.total_collected) || 0,
+        status: l.status || 'active',
+        created_at: l.created_at || new Date().toISOString(),
+        closed_at: l.closed_at || null
+      }));
+
+      // Cleaned sales
+      const cleanedSales = parsed.daily_sales.map(s => ({
+        id: s.id,
+        lot_id: s.lot_id,
+        amount: parseFloat(s.amount) || 0,
+        shift: s.shift || 'lunch',
+        note: s.note || '',
+        float_deducted: parseFloat(s.float_deducted) || 0,
+        created_at: s.created_at || new Date().toISOString()
+      }));
+
+      // 1. Restore to Supabase Cloud if online
+      if (!isOfflineMode && supabaseClient) {
+        try {
+          // Clear current data
+          await supabaseClient.from('daily_sales').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+          await supabaseClient.from('lots').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+
+          // Insert lots first (foreign key dependency)
+          if (cleanedLots.length > 0) {
+            const { error: lotErr } = await supabaseClient.from('lots').insert(cleanedLots);
+            if (lotErr) console.warn('Supabase lots restore warning:', lotErr);
+          }
+
+          // Insert daily sales in batches
+          if (cleanedSales.length > 0) {
+            for (let i = 0; i < cleanedSales.length; i += 50) {
+              const chunk = cleanedSales.slice(i, i + 50);
+              const { error: saleErr } = await supabaseClient.from('daily_sales').insert(chunk);
+              if (saleErr) console.warn('Supabase sales restore warning:', saleErr);
+            }
+          }
+        } catch (sbErr) {
+          console.error('Supabase restore error:', sbErr);
+          showToast('เกิดข้อผิดพลาดในการบันทึกลง Supabase กำลังกู้คืนในเครื่องแทน', 'warning');
+        }
+      }
+
+      // 2. Restore to LocalStorage
+      localStorage.setItem(STORAGE_KEYS.LOCAL_LOTS, JSON.stringify(cleanedLots));
+      localStorage.setItem(STORAGE_KEYS.LOCAL_SALES, JSON.stringify(cleanedSales));
+      if (parsed.products && Array.isArray(parsed.products) && parsed.products.length > 0) {
+        localStorage.setItem(STORAGE_KEYS.LOCAL_PRODUCTS, JSON.stringify(parsed.products));
+      }
+      if (parsed.order_draft) {
+        localStorage.setItem(STORAGE_KEYS.LOCAL_ORDER_DRAFT, JSON.stringify(parsed.order_draft));
+      }
+      if (parsed.po_meta) {
+        localStorage.setItem(STORAGE_KEYS.LOCAL_PO_META, JSON.stringify(parsed.po_meta));
+      }
+
+      closeModal('config-modal');
+      showToast('🎉 กู้คืนข้อมูลระบบสำเร็จสมบูรณ์! กำลังรีเฟรช...', 'success');
+      setTimeout(() => {
+        window.location.reload();
+      }, 1200);
+
+    } catch (parseErr) {
+      console.error('File parsing error:', parseErr);
+      showToast('ไม่สามารถอ่านไฟล์ได้ กรุณาตรวจสอบว่าเป็นไฟล์ JSON ที่ถูกต้อง', 'error');
+    } finally {
+      event.target.value = '';
+    }
+  };
+
+  reader.onerror = () => {
+    showToast('เกิดข้อผิดพลาดในการเปิดไฟล์', 'error');
+    event.target.value = '';
+  };
+
+  reader.readAsText(file, 'utf-8');
+}
+
 // ========================================================
 // 5. Tab Navigation (Supports both Laptop & Mobile)
 // ========================================================

@@ -864,7 +864,7 @@
   <!-- MODAL 2: SUPABASE CONFIGURATION (ตั้งค่าฐานข้อมูล) -->
   <!-- ============================================== -->
   <div id="config-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp max-h-[92vh] overflow-y-auto">
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center space-x-2">
           <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-base font-bold">
@@ -901,9 +901,36 @@
           <button type="button" onclick="useDemoMode()" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition text-xs">
             สลับไปใช้โหมดจัดเก็บในเครื่อง (Offline / Local)
           </button>
-          <button type="button" onclick="clearLocalDataAndReset()" class="w-full py-2 bg-rose-50 hover:bg-rose-100 text-rose-700 font-semibold rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-rose-200">
-            <i class="fa-solid fa-trash-can"></i> ล้างแคชทดสอบในเครื่องและเริ่มใหม่ (Reset Local Cache)
-          </button>
+          
+          <!-- ส่วนสำรองและกู้คืนข้อมูล (Backup & Restore) -->
+          <div class="border-t border-slate-200 pt-3 mt-1 space-y-2">
+            <p class="text-[11px] text-slate-500 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-shield-halved text-blue-600"></i> สำรองและกู้คืนข้อมูล (Backup & Restore)
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+              <button type="button" onclick="downloadSystemBackupJSON()" class="w-full py-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 font-bold rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-blue-200 shadow-sm">
+                <i class="fa-solid fa-download"></i> ดาวน์โหลดไฟล์สำรอง (.json)
+              </button>
+              <button type="button" onclick="triggerRestoreSystem()" class="w-full py-2.5 bg-amber-50 hover:bg-amber-100 text-amber-800 font-bold rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-amber-200 shadow-sm">
+                <i class="fa-solid fa-upload"></i> กู้คืนข้อมูลเดิม (Restore Data)
+              </button>
+            </div>
+            <!-- Hidden File Input for JSON Restore -->
+            <input type="file" id="restore-file-input" accept=".json" class="hidden" onchange="handleRestoreFileSelected(event)">
+          </div>
+
+          <!-- ส่วนจัดการข้อมูลทดสอบ & รีเซ็ตระบบ -->
+          <div class="border-t border-slate-200 pt-3 mt-1 space-y-2">
+            <p class="text-[11px] text-slate-500 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation text-rose-600"></i> รีเซ็ตระบบ & ล้างข้อมูลทดสอบ
+            </p>
+            <button type="button" onclick="clearLocalDataAndReset()" class="w-full py-2 bg-slate-100 hover:bg-slate-200 text-slate-600 font-semibold rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-slate-200">
+              <i class="fa-solid fa-broom"></i> ล้างแคชทดสอบในเครื่อง (Reset Local Cache)
+            </button>
+            <button type="button" onclick="triggerFactoryReset()" class="w-full py-2.5 bg-rose-600 hover:bg-rose-700 active:scale-98 text-white font-bold rounded-xl transition text-xs flex items-center justify-center gap-1.5 shadow-sm shadow-rose-600/25">
+              <i class="fa-solid fa-triangle-exclamation"></i> รีเซ็ตระบบทั้งหมดเพื่อเริ่มใช้งานจริง (Factory Reset)
+            </button>
+          </div>
         </div>
       </form>
     </div>
