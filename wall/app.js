@@ -1943,105 +1943,105 @@ function switchTab(tabId) {
 function getDefaultWallsProducts() {
   return [
     // --- 1. กลุ่มแพดเดิลป๊อป (6 รายการ) ---
-    { id: 'paddlepop-big-rocket', name: 'บิ๊ก ร็อกเก็ต เจลลี่', category: 'แพดเดิลป๊อป', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'paddlepop-choc-lava', name: 'ช็อก ลาวา', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'paddlepop-rainbow', name: 'เรนโบว์', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'paddlepop-dragon-pop', name: 'ดราก้อน ป๊อป', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'paddlepop-ovaltine', name: 'โอวัลติน', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'paddlepop-octopus', name: 'ออคโตปุส', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
+    { id: 'paddlepop-big-rocket', name: 'บิ๊ก ร็อกเก็ต เจลลี่', category: 'แพดเดิลป๊อป', pieces_per_box: 30, cost_per_piece: 8.04, box_cost: 241.29, retail_price: 10.00 },
+    { id: 'paddlepop-choc-lava', name: 'ช็อก ลาวา', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'paddlepop-rainbow', name: 'เรนโบว์', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'paddlepop-dragon-pop', name: 'ดราก้อน ป๊อป', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'paddlepop-ovaltine', name: 'โอวัลติน', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'paddlepop-octopus', name: 'ออคโตปุส', category: 'แพดเดิลป๊อป', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
 
     // --- 2. กลุ่มวอลล์ (39 รายการ) ---
-    { id: 'walls-fruity', name: 'ฟรุตตี้', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, retail_price: 5.00 },
-    { id: 'walls-cola', name: 'โคล่า', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, retail_price: 5.00 },
-    { id: 'walls-mini-football', name: 'มินิ ฟุตบอล (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-little-ghost', name: 'ลิตเติ้ล โกสท์', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-cone-hokkaido', name: 'วอลล์โคน นมฮอกไกโด', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-cone-chocolate', name: 'วอลล์โคน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-mini-mochi-strawberry', name: 'มินิโมจิ สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-mini-mochi-vanilla', name: 'มินิโมจิ วานิลลา', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-mini-mochi-chocolate', name: 'มินิโมจิ ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-giant-twin-cola', name: 'ยักษ์คู่ กลิ่นโคล่า', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-giant-twin-orange', name: 'ยักษ์คู่ กลิ่นส้ม', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-watermelon', name: 'แตงโม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-cookie-cream', name: 'คุกกี้ แอนด์ ครีม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, retail_price: 10.00 },
-    { id: 'walls-minion-caramel', name: 'มินเนี่ยน คาราเมล (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-buzz-rocket-pop', name: 'บัซ ร็อกเก็ต ป๊อป (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-iceball-watermelon', name: 'ไอซ์บอลล์ แตงโม (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-shots-lime', name: 'ช็อทส์ ไลม์ (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-shots-fruity', name: 'ช็อทส์ ฟรุตตี้', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.05, retail_price: 15.00 },
-    { id: 'walls-sweetheart', name: 'สวีตฮาร์ท', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-waffle-strawberry', name: 'วาฟเฟิล สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-waffle-milk', name: 'วาฟเฟิล รสนม', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-twister-grape-lychee', name: 'ทวิสเตอร์ องุ่น ลิ้นจี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-fruity-max', name: 'ฟรุตตี้ แม็กซ์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-solero-split-lime', name: 'โซเลโร สปลิท รสมะนาว', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, retail_price: 15.00 },
-    { id: 'walls-calippo-slush-orange', name: 'คาลิปโป สลัช ครัช ส้ม (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-lava-delight', name: 'ลาวา ดีไลท์ (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-mochi-milky', name: 'โมจิ มิลค์กี้', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-calippo-cola-lemon', name: 'คาลิปโป โคล่า เลมอน', category: 'วอลล์', pieces_per_box: 28, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-bites-time-vanilla-caramel', name: 'ไบท์ส ไทม์ วานิลลา และ คาราเมล', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-bites-time-strawberry', name: 'ไบท์ส ไทม์ สตรอเบอร์รี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-viennetta-chocolate', name: 'เวียนเน็ตตา ช็อกโกแลต (ใหม่)', category: 'วอลล์', pieces_per_box: 18, cost_per_piece: 24.12, retail_price: 30.00 },
-    { id: 'walls-ovaltine-whitemalt', name: 'โอวัลติน ไวท์มอลต์ ครันชี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 24.12, retail_price: 30.00 },
-    { id: 'walls-iceball-lemon', name: 'ไอซ์บอลล์ เลมอน (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
-    { id: 'walls-iceball-grape', name: 'ไอซ์บอลล์ องุ่น', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
-    { id: 'walls-topten-vanilla', name: 'ท็อปเทน วานิลลา', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
-    { id: 'walls-topten-chocolate', name: 'ท็อปเทน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
-    { id: 'walls-topten-cornflakes', name: 'ท็อปเทน มิลค์ & คอร์นเฟลกส์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, retail_price: 20.00 },
-    { id: 'walls-topten-extra-strawberry', name: 'ท็อปเทน เอ็กซ์ตร้า สตรอเบอร์รี่ (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, retail_price: 25.00 },
-    { id: 'walls-topten-extra-chocolate', name: 'ท็อปเทน เอ็กซ์ตร้า ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, retail_price: 25.00 },
+    { id: 'walls-fruity', name: 'ฟรุตตี้', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, box_cost: 240.75, retail_price: 5.00 },
+    { id: 'walls-cola', name: 'โคล่า', category: 'วอลล์', pieces_per_box: 60, cost_per_piece: 4.01, box_cost: 240.75, retail_price: 5.00 },
+    { id: 'walls-mini-football', name: 'มินิ ฟุตบอล (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, box_cost: 241.20, retail_price: 10.00 },
+    { id: 'walls-little-ghost', name: 'ลิตเติ้ล โกสท์', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, box_cost: 241.20, retail_price: 10.00 },
+    { id: 'walls-cone-hokkaido', name: 'วอลล์โคน นมฮอกไกโด', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, box_cost: 321.60, retail_price: 10.00 },
+    { id: 'walls-cone-chocolate', name: 'วอลล์โคน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, box_cost: 321.60, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-strawberry', name: 'มินิโมจิ สตรอเบอร์รี (ใหม่)', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, box_cost: 321.60, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-vanilla', name: 'มินิโมจิ วานิลลา', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, box_cost: 321.60, retail_price: 10.00 },
+    { id: 'walls-mini-mochi-chocolate', name: 'มินิโมจิ ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 40, cost_per_piece: 8.04, box_cost: 321.60, retail_price: 10.00 },
+    { id: 'walls-giant-twin-cola', name: 'ยักษ์คู่ กลิ่นโคล่า', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, box_cost: 241.29, retail_price: 10.00 },
+    { id: 'walls-giant-twin-orange', name: 'ยักษ์คู่ กลิ่นส้ม', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 8.04, box_cost: 241.29, retail_price: 10.00 },
+    { id: 'walls-watermelon', name: 'แตงโม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'walls-cookie-cream', name: 'คุกกี้ แอนด์ ครีม', category: 'วอลล์', pieces_per_box: 36, cost_per_piece: 8.04, box_cost: 289.44, retail_price: 10.00 },
+    { id: 'walls-minion-caramel', name: 'มินเนี่ยน คาราเมล (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, box_cost: 289.44, retail_price: 15.00 },
+    { id: 'walls-buzz-rocket-pop', name: 'บัซ ร็อกเก็ต ป๊อป (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, box_cost: 361.80, retail_price: 15.00 },
+    { id: 'walls-iceball-watermelon', name: 'ไอซ์บอลส์ แตงโม (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, box_cost: 361.80, retail_price: 15.00 },
+    { id: 'walls-shots-lime', name: 'ช็อทส์ ไลม์ (ใหม่)', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, box_cost: 361.80, retail_price: 15.00 },
+    { id: 'walls-shots-fruity', name: 'ช็อทส์ ฟรุตตี้', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.05, box_cost: 361.39, retail_price: 15.00 },
+    { id: 'walls-sweetheart', name: 'สวีตฮาร์ท', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, box_cost: 289.44, retail_price: 15.00 },
+    { id: 'walls-waffle-strawberry', name: 'วาฟเฟิล สตรอเบอร์รี (ใหม่)', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, box_cost: 289.44, retail_price: 15.00 },
+    { id: 'walls-waffle-milk', name: 'วาฟเฟิล รสนม', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, box_cost: 289.44, retail_price: 15.00 },
+    { id: 'walls-twister-grape-lychee', name: 'ทวิสเตอร์ องุ่น ลิ้นจี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 12.06, box_cost: 289.44, retail_price: 15.00 },
+    { id: 'walls-fruity-max', name: 'ฟรุตตี้ แม็กซ์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 12.06, box_cost: 301.47, retail_price: 15.00 },
+    { id: 'walls-solero-split-lime', name: 'โซเลโร สปลิท รสมะนาว', category: 'วอลล์', pieces_per_box: 30, cost_per_piece: 12.06, box_cost: 361.77, retail_price: 15.00 },
+    { id: 'walls-calippo-slush-orange', name: 'คาลิปโป สลัช ครัช ส้ม (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 16.08, box_cost: 321.60, retail_price: 20.00 },
+    { id: 'walls-lava-delight', name: 'ลาวา ดีไลท์ (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.08, box_cost: 402.00, retail_price: 20.00 },
+    { id: 'walls-mochi-milky', name: 'โมจิ มิลค์กี้', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-calippo-cola-lemon', name: 'คาลิปโป โคลา เลมอน', category: 'วอลล์', pieces_per_box: 28, cost_per_piece: 16.08, box_cost: 450.25, retail_price: 20.00 },
+    { id: 'walls-bites-time-vanilla-caramel', name: 'ไบท์ส ไทม์ วานิลลา และ คาราเมล', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-bites-time-strawberry', name: 'ไบท์ส ไทม์ สตรอเบอร์รี', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'walls-viennetta-chocolate', name: 'เวียนเน็ตตา ช็อกโกแลต (ใหม่)', category: 'วอลล์', pieces_per_box: 18, cost_per_piece: 24.12, box_cost: 434.15, retail_price: 30.00 },
+    { id: 'walls-ovaltine-whitemalt', name: 'โอวัลติน ไวท์มอลต์ ครันชี่', category: 'วอลล์', pieces_per_box: 24, cost_per_piece: 24.12, box_cost: 578.87, retail_price: 30.00 },
+    { id: 'walls-iceball-lemon', name: 'ไอซ์บอลส์ เลมอน (ใหม่)', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, box_cost: 562.82, retail_price: 35.00 },
+    { id: 'walls-iceball-grape', name: 'ไอซ์บอลส์ องุ่น', category: 'วอลล์', pieces_per_box: 20, cost_per_piece: 28.14, box_cost: 562.82, retail_price: 35.00 },
+    { id: 'walls-topten-vanilla', name: 'ท็อปเทน วานิลลา', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, box_cost: 402.32, retail_price: 20.00 },
+    { id: 'walls-topten-chocolate', name: 'ท็อปเทน ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, box_cost: 402.32, retail_price: 20.00 },
+    { id: 'walls-topten-cornflakes', name: 'ท็อปเทน มิลค์ & คอร์นเฟลกส์', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 16.09, box_cost: 402.32, retail_price: 20.00 },
+    { id: 'walls-topten-extra-strawberry', name: 'ท็อปเทน เอ็กซ์ตร้า สตรอเบอร์รี (ใหม่)', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, box_cost: 502.49, retail_price: 25.00 },
+    { id: 'walls-topten-extra-chocolate', name: 'ท็อปเทน เอ็กซ์ตร้า ช็อกโกแลต', category: 'วอลล์', pieces_per_box: 25, cost_per_piece: 20.10, box_cost: 502.49, retail_price: 25.00 },
 
     // --- 3. กลุ่มเอเชียน ดีไลท์ (3 รายการ) ---
-    { id: 'walls-asian-durian', name: 'ทุเรียนหมอนทอง', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-asian-taro', name: 'เผือก', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-asian-blackbean', name: 'ถั่วดำ', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
+    { id: 'walls-asian-durian', name: 'ทุเรียนหมอนทอง', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'walls-asian-taro', name: 'เผือก', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'walls-asian-blackbean', name: 'ถั่วดำ', category: 'เอเชียน ดีไลท์', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
 
     // --- 4. กลุ่มวอลล์คัพ (7 รายการ) ---
-    { id: 'walls-cup-chocchip', name: 'ช็อกชิป', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-chocolate', name: 'ช็อกโกแลต', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-vanilla', name: 'วานิลลา', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-lime', name: 'มะนาว', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-coconut', name: 'กะทิ', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-ovaltine', name: 'โอวัลติน', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'walls-cup-butterbear-toy', name: 'บัตเตอร์แบร์ ทอย (ใหม่)', category: 'วอลล์คัพ', pieces_per_box: 20, cost_per_piece: 32.16, retail_price: 40.00 },
+    { id: 'walls-cup-chocchip', name: 'คัพ ช็อกชิป', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-cup-chocolate', name: 'คัพ ช็อกโกแลต', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-cup-vanilla', name: 'คัพ วานิลลา', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-cup-lime', name: 'คัพ มะนาว', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'walls-cup-coconut', name: 'คัพ กะทิ', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'walls-cup-ovaltine', name: 'คัพ โอวัลติน', category: 'วอลล์คัพ', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'walls-cup-butterbear-toy', name: 'บัตเตอร์แบร์ ทอย (ใหม่)', category: 'วอลล์คัพ', pieces_per_box: 20, cost_per_piece: 32.16, box_cost: 643.20, retail_price: 40.00 },
 
     // --- 5. กลุ่มคอร์นเนตโต (7 รายการ) ---
-    { id: 'cornetto-classic-vanilla', name: 'คลาสสิก วานิลลา', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'cornetto-classic-darkchoc', name: 'คลาสสิก ดาร์ค ช็อกโกแลต บราวนี่', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'cornetto-classic-strawberry', name: 'คลาสสิก สตรอเบอร์รี่ คุกกี้', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'cornetto-classic-cookie-cream', name: 'คลาสสิก คุกกี้ แอนด์ ครีม', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'cornetto-muscat-yogurt', name: 'องุ่น มัสแคท & โยเกิร์ต (ใหม่)', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, retail_price: 20.00 },
-    { id: 'cornetto-royale-choclove', name: 'รอยัล ช็อกโกเลิฟ', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
-    { id: 'cornetto-royale-strawberry', name: 'รอยัล สตรอเบอร์รี่', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, retail_price: 35.00 },
+    { id: 'cornetto-classic-vanilla', name: 'คลาสสิก วานิลลา', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'cornetto-classic-darkchoc', name: 'คลาสสิก ดาร์ค ช็อกโกแลต บราวนี่', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'cornetto-classic-strawberry', name: 'คลาสสิก สตรอเบอร์รี คุกกี้', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'cornetto-classic-cookie-cream', name: 'คลาสสิก คุกกี้ แอนด์ ครีม', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 386.00, retail_price: 20.00 },
+    { id: 'cornetto-muscat-yogurt', name: 'องุ่น มัสแคท & โยเกิร์ต (ใหม่)', category: 'คอร์นเนตโต', pieces_per_box: 24, cost_per_piece: 16.08, box_cost: 385.92, retail_price: 20.00 },
+    { id: 'cornetto-royale-choclove', name: 'รอยัล ช็อกโกเลิฟ', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, box_cost: 562.82, retail_price: 35.00 },
+    { id: 'cornetto-royale-strawberry', name: 'รอยัล สตรอเบอร์รี', category: 'คอร์นเนตโต', pieces_per_box: 20, cost_per_piece: 28.14, box_cost: 562.82, retail_price: 35.00 },
 
     // --- 6. กลุ่มแม็กนั่ม (10 รายการ) ---
-    { id: 'magnum-almond', name: 'อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
-    { id: 'magnum-classic', name: 'คลาสสิค', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
-    { id: 'magnum-white-almond', name: 'ไวท์ อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
-    { id: 'magnum-choc-luxe', name: 'ช็อกโกแลต ลักซ์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, retail_price: 50.00 },
-    { id: 'magnum-matcha-crumble', name: 'มัทฉะ ครัมเบิ้ล', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, retail_price: 50.00 },
-    { id: 'magnum-pistachio', name: 'แม็กนั่ม พิสตาชิโอ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, retail_price: 50.00 },
-    { id: 'magnum-cone-trio', name: 'แม็กนั่ม โคนทริโอ เพรสทีจ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 18, cost_per_piece: 40.20, retail_price: 50.00 },
-    { id: 'magnum-mini-almond-pack6', name: 'แม็กนั่ม มินิ อัลมอนด์ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.19, retail_price: 199.00 },
-    { id: 'magnum-mini-brownie-pack6', name: 'แม็กนั่ม มินิ บราวนี่ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.10, retail_price: 199.00 },
-    { id: 'magnum-mini-pistachio-pack6', name: 'แม็กนั่ม มินิ พิสตาชิโอ แพ็ค 6 (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.00, retail_price: 199.00 },
+    { id: 'magnum-almond', name: 'แม็กนั่ม อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, box_cost: 965.14, retail_price: 50.00 },
+    { id: 'magnum-classic', name: 'แม็กนั่ม คลาสสิค', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, box_cost: 965.14, retail_price: 50.00 },
+    { id: 'magnum-white-almond', name: 'แม็กนั่ม ไวท์ อัลมอนด์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, box_cost: 965.14, retail_price: 50.00 },
+    { id: 'magnum-choc-luxe', name: 'ช็อกโกแลต ลักซ์', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, box_cost: 964.80, retail_price: 50.00 },
+    { id: 'magnum-matcha-crumble', name: 'มัทฉะ ครัมเบิ้ล', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.21, box_cost: 965.14, retail_price: 50.00 },
+    { id: 'magnum-pistachio', name: 'แม็กนั่ม พิสตาชิโอ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 24, cost_per_piece: 40.20, box_cost: 964.80, retail_price: 50.00 },
+    { id: 'magnum-cone-trio', name: 'แม็กนั่ม โคนทริโอ เพรสทีจ (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 18, cost_per_piece: 40.20, box_cost: 723.60, retail_price: 50.00 },
+    { id: 'magnum-mini-almond-pack6', name: 'แม็กนั่ม มินิ อัลมอนด์ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.10, box_cost: 960.59, retail_price: 199.00 },
+    { id: 'magnum-mini-brownie-pack6', name: 'แม็กนั่ม มินิ บราวนี่ แพ็ค 6', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.10, box_cost: 960.59, retail_price: 199.00 },
+    { id: 'magnum-mini-pistachio-pack6', name: 'แม็กนั่ม มินิ พิสตาชิโอ แพ็ค 6 (ใหม่)', category: 'แม็กนั่ม', pieces_per_box: 6, cost_per_piece: 160.00, box_cost: 959.97, retail_price: 199.00 },
 
     // --- 7. กลุ่มกล่องตัก / ดีลักซ์ (15 รายการ) ---
-    { id: 'walls-classic-tub-small-2in1', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องเล็ก)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 8, cost_per_piece: 39.39, retail_price: 49.00 },
-    { id: 'walls-classic-tub-choc-chocchip', name: 'ช็อกโกแลต ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
-    { id: 'walls-classic-tub-lime-delight', name: 'มะนาว ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
-    { id: 'walls-classic-tub-chocchip', name: 'ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
-    { id: 'walls-classic-tub-vanilla', name: 'วานิลลา (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
-    { id: 'walls-classic-tub-ruammit', name: 'รวมมิตร (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, retail_price: 89.00 },
-    { id: 'walls-classic-tub-2in1-chocchip-choc', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
-    { id: 'walls-classic-tub-3in1-neapolitan', name: '3 in 1 นีโอโพลิแทน (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
-    { id: 'walls-classic-tub-3in1-triple-choc', name: '3 in 1 ทริปเปิ้ล ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
-    { id: 'walls-classic-tub-3in1-triple-delight', name: '3 in 1 ทริปเปิ้ล ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, retail_price: 89.00 },
-    { id: 'walls-selection-cookies-cream', name: 'ซีเล็คชั่น คุกกี้ แอนด์ ครีม', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 4, cost_per_piece: 71.60, retail_price: 89.00 },
-    { id: 'walls-deluxe-vanilla', name: 'ดีลักซ์ วานิลลา (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
-    { id: 'walls-deluxe-strawberry', name: 'ดีลักซ์ สตรอเบอร์รี (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
-    { id: 'walls-deluxe-choc-brownie', name: 'ดีลักซ์ ช็อกโกแลต บราวนี่ (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 },
-    { id: 'walls-deluxe-caramel', name: 'ดีลักซ์ คาราเมล (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, retail_price: 109.00 }
+    { id: 'walls-classic-tub-small-2in1', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องเล็ก)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 8, cost_per_piece: 39.39, box_cost: 315.16, retail_price: 49.00 },
+    { id: 'walls-classic-tub-choc-chocchip', name: 'ช็อกโกแลต ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, box_cost: 429.22, retail_price: 89.00 },
+    { id: 'walls-classic-tub-lime-delight', name: 'มะนาว ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, box_cost: 429.22, retail_price: 89.00 },
+    { id: 'walls-classic-tub-chocchip', name: 'ช็อกชิป (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, box_cost: 429.22, retail_price: 89.00 },
+    { id: 'walls-classic-tub-vanilla', name: 'วานิลลา (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, box_cost: 429.22, retail_price: 89.00 },
+    { id: 'walls-classic-tub-ruammit', name: 'รวมมิตร (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.54, box_cost: 429.22, retail_price: 89.00 },
+    { id: 'walls-classic-tub-2in1-chocchip-choc', name: '2 in 1 ช็อกชิป และ ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, box_cost: 429.43, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-neapolitan', name: '3 in 1 นีโอโพลิแทน (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, box_cost: 429.43, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-triple-choc', name: '3 in 1 ทริปเปิ้ล ช็อกโกแลต (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, box_cost: 429.43, retail_price: 89.00 },
+    { id: 'walls-classic-tub-3in1-triple-delight', name: '3 in 1 ทริปเปิ้ล ดีไลท์ (กล่องใหญ่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 71.57, box_cost: 429.43, retail_price: 89.00 },
+    { id: 'walls-selection-cookies-cream', name: 'ซีเล็คชั่น คุกกี้ แอนด์ ครีม', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 4, cost_per_piece: 71.60, box_cost: 286.42, retail_price: 89.00 },
+    { id: 'walls-deluxe-vanilla', name: 'ดีลักซ์ วานิลลา (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, box_cost: 525.81, retail_price: 109.00 },
+    { id: 'walls-deluxe-strawberry', name: 'ดีลักซ์ สตรอเบอร์รี (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, box_cost: 525.81, retail_price: 109.00 },
+    { id: 'walls-deluxe-choc-brownie', name: 'ดีลักซ์ ช็อกโกแลต บราวนี่ (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, box_cost: 525.81, retail_price: 109.00 },
+    { id: 'walls-deluxe-caramel', name: 'ดีลักซ์ คาราเมล (ใหม่)', category: 'กล่องตัก/ดีลักซ์', pieces_per_box: 6, cost_per_piece: 87.63, box_cost: 525.81, retail_price: 109.00 }
   ];
 }
 
@@ -2069,25 +2069,28 @@ async function loadProductCatalog() {
     }
   }
 
-  const CATALOG_VERSION = 'v2_official_87_items';
+  const CATALOG_VERSION = 'v3_official_exact_vat_87';
   const currentCatalogVer = localStorage.getItem('walls_catalog_version');
 
-  if (!loaded || currentCatalogVer !== CATALOG_VERSION || (Array.isArray(loaded) && loaded.length < 50)) {
+  if (currentCatalogVer !== CATALOG_VERSION) {
+    loaded = getDefaultWallsProducts();
+    localStorage.setItem(STORAGE_KEYS.LOCAL_PRODUCTS, JSON.stringify(loaded));
+    localStorage.setItem('walls_catalog_version', CATALOG_VERSION);
+  } else if (!loaded || loaded.length < 50) {
     try {
       const localRaw = localStorage.getItem(STORAGE_KEYS.LOCAL_PRODUCTS);
-      if (localRaw && currentCatalogVer === CATALOG_VERSION) {
+      if (localRaw) {
         const parsed = JSON.parse(localRaw);
         if (Array.isArray(parsed) && parsed.length >= 80) {
           loaded = parsed;
         }
       }
     } catch (e) {}
-  }
-
-  if (!loaded || loaded.length < 50) {
-    loaded = getDefaultWallsProducts();
-    localStorage.setItem(STORAGE_KEYS.LOCAL_PRODUCTS, JSON.stringify(loaded));
-    localStorage.setItem('walls_catalog_version', CATALOG_VERSION);
+    if (!loaded || loaded.length < 50) {
+      loaded = getDefaultWallsProducts();
+      localStorage.setItem(STORAGE_KEYS.LOCAL_PRODUCTS, JSON.stringify(loaded));
+      localStorage.setItem('walls_catalog_version', CATALOG_VERSION);
+    }
   }
 
   productCatalog = loaded;
@@ -2111,14 +2114,24 @@ function saveOrderDraftLocal() {
 
 function computeProductMetrics(prod) {
   const pieces = Math.max(1, parseInt(prod.pieces_per_box, 10) || 24);
-  const costPiece = Math.max(0, parseFloat(prod.cost_per_piece) || 0);
   const retailPiece = Math.max(0, parseFloat(prod.retail_price) || 0);
 
-  const profitPerPiece = retailPiece - costPiece;
+  // If box_cost is explicitly defined on the product, use it directly (accurate to satang from official invoice)
+  // Otherwise, fallback to cost_per_piece * pieces
+  const rawCostPiece = Math.max(0, parseFloat(prod.cost_per_piece) || 0);
+  const rawBoxCost = (prod.box_cost !== undefined && prod.box_cost !== null && !isNaN(parseFloat(prod.box_cost)))
+    ? parseFloat(prod.box_cost)
+    : (rawCostPiece * pieces);
+  const boxCost = Math.round(rawBoxCost * 100) / 100;
+
+  const costPiece = (prod.cost_per_piece !== undefined && prod.cost_per_piece !== null && !isNaN(parseFloat(prod.cost_per_piece)))
+    ? parseFloat(prod.cost_per_piece)
+    : (pieces > 0 ? Math.round((boxCost / pieces) * 100) / 100 : 0);
+
+  const profitPerPiece = Math.round((retailPiece - costPiece) * 100) / 100;
   const marginPct = retailPiece > 0 ? (profitPerPiece / retailPiece) * 100 : 0;
-  const boxCost = costPiece * pieces;
-  const boxRevenue = retailPiece * pieces;
-  const boxProfit = boxRevenue - boxCost;
+  const boxRevenue = Math.round((retailPiece * pieces) * 100) / 100;
+  const boxProfit = Math.round((boxRevenue - boxCost) * 100) / 100;
 
   return {
     pieces,
@@ -2470,7 +2483,7 @@ function onProductFormCalc(source) {
   const profitPiece = retail - costPiece;
   const marginPct = retail > 0 ? (profitPiece / retail) * 100 : 0;
   const boxRev = retail * pieces;
-  const boxProfit = boxRev - (costPiece * pieces);
+  const boxProfit = boxRev - costBox;
 
   document.getElementById('prod-preview-piece-profit').innerText = `${profitPiece >= 0 ? '+' : ''}฿${profitPiece.toFixed(2)} (${marginPct.toFixed(1)}%)`;
   document.getElementById('prod-preview-box-rev').innerText = `฿${boxRev.toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
@@ -2484,6 +2497,7 @@ async function handleSaveProduct(e) {
   const category = document.getElementById('prod-category-input').value;
   const pieces_per_box = Math.max(1, parseInt(document.getElementById('prod-pieces-input').value, 10) || 24);
   const cost_per_piece = Math.max(0, parseFloat(document.getElementById('prod-cost-piece-input').value) || 0);
+  const box_cost = Math.max(0, parseFloat(document.getElementById('prod-cost-box-input').value) || (cost_per_piece * pieces_per_box));
   const retail_price = Math.max(0, parseFloat(document.getElementById('prod-retail-input').value) || 0);
 
   if (!name) {
@@ -2494,7 +2508,7 @@ async function handleSaveProduct(e) {
   if (id) {
     const idx = productCatalog.findIndex(p => p.id === id);
     if (idx > -1) {
-      productCatalog[idx] = { ...productCatalog[idx], name, category, pieces_per_box, cost_per_piece, retail_price };
+      productCatalog[idx] = { ...productCatalog[idx], name, category, pieces_per_box, cost_per_piece, box_cost, retail_price };
     }
     if (!isOfflineMode && supabaseClient) {
       try {
@@ -2509,6 +2523,7 @@ async function handleSaveProduct(e) {
       category,
       pieces_per_box,
       cost_per_piece,
+      box_cost,
       retail_price
     };
     productCatalog.push(newProd);
@@ -2558,11 +2573,12 @@ async function deleteProductById(productId) {
 }
 
 function resetDefaultProducts() {
-  if (!confirm('ต้องการรีเซ็ตรายการสินค้ากลับเป็นค่าเริ่มต้นของไอศกรีมวอลล์ (8 รายการ) ใช่หรือไม่?')) return;
+  if (!confirm('ต้องการรีเซ็ตรายการสินค้าและราคาต้นทุนกลับเป็นค่ามาตรฐานทางการ (87 รายการรวม VAT ตรงตามป้ายเป๊ะ) ใช่หรือไม่?')) return;
   productCatalog = getDefaultWallsProducts();
   saveProductCatalogLocal();
+  localStorage.setItem('walls_catalog_version', 'v3_official_exact_vat_87');
   autoFillOrderBudget(5000, true);
-  showToast('รีเซ็ตรายการสินค้ามาตรฐานเรียบร้อยแล้ว', 'success');
+  showToast('รีเซ็ตฐานข้อมูลสินค้าตรงตามป้ายทางการแล้ว', 'success');
 }
 
 // --- Purchase Order (ใบสั่งซื้อสินค้า A4 & PDF Export) ---
