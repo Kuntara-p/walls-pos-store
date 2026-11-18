@@ -4438,11 +4438,32 @@ function detectVisitorDeviceLabel(ua = navigator.userAgent || '') {
   return `🌐 อุปกรณ์เว็บ${browserSuffix}`;
 }
 
-async function recordDirectorVisitActivity(tabLabel = null) {
+const DIRECTOR_PRESENCE_CHANNEL = typeof BroadcastChannel !== 'undefined' ? new BroadcastChannel('walls_director_presence') : null;
+
+function notifyDirectorPresenceChanged() {
+  try {
+    if (DIRECTOR_PRESENCE_CHANNEL) {
+      DIRECTOR_PRESENCE_CHANNEL.postMessage({ type: 'presence_changed', at: Date.now() });
+    }
+  } catch (e) {}
+}
+
+function isVisitRecordOnline(v) {
+  if (!v) return false;
+  const uaStr = String(v.user_agent || '');
+  if (uaStr.startsWith('CLOSED|')) return false;
+  const lastActiveTime = new Date(v.last_active_at || v.visited_at).getTime();
+  if (isNaN(lastActiveTime)) return false;
+  return (Date.now() - lastActiveTime) <= 45 * 1000;
+}
+
+async function recordDirectorVisitActivity(tabLabel = null, isClosing = false) {
   if (!isDirectorViewMode()) return;
   try {
     const SESSION_KEY = 'walls_director_visit_session_v1';
     const nowIso = new Date().toISOString();
+    const rawUa = (navigator.userAgent || '').slice(0, 220);
+    const statusPrefix = isClosing ? 'CLOSED|' : 'ONLINE|';
     let sessionObj = null;
 
     try {
@@ -4460,10 +4481,11 @@ async function recordDirectorVisitActivity(tabLabel = null) {
         last_active_at: nowIso,
         device_label: detectVisitorDeviceLabel(),
         viewed_tabs: tabLabel || 'สมุดบัญชีกำไร',
-        user_agent: (navigator.userAgent || '').slice(0, 250)
+        user_agent: statusPrefix + rawUa
       };
     } else {
       sessionObj.last_active_at = nowIso;
+      sessionObj.user_agent = statusPrefix + rawUa;
       if (tabLabel) {
         const currentTabs = (sessionObj.viewed_tabs || '')
           .split(',')
@@ -4489,12 +4511,35 @@ async function recordDirectorVisitActivity(tabLabel = null) {
       localList.unshift(sessionObj);
     }
     localStorage.setItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS, JSON.stringify(localList.slice(0, 100)));
+    notifyDirectorPresenceChanged();
 
     // Sync to Supabase director_visits table if online
     if (!isOfflineMode && supabaseClient) {
-      try {
-        await supabaseClient.from('director_visits').upsert([sessionObj]);
-      } catch (e) {}
+      if (isClosing) {
+        // Use keepalive fetch so request completes even when browser tab is closing immediately
+        try {
+          const sbUrl = localStorage.getItem(STORAGE_KEYS.SUPABASE_URL) || DEFAULT_SUPABASE.URL;
+          const sbKey = localStorage.getItem(STORAGE_KEYS.SUPABASE_KEY) || DEFAULT_SUPABASE.KEY;
+          fetch(`${sbUrl}/rest/v1/director_visits?id=eq.${encodeURIComponent(sessionObj.id)}`, {
+            method: 'PATCH',
+            keepalive: true,
+            headers: {
+              'Content-Type': 'application/json',
+              'apikey': sbKey,
+              'Authorization': `Bearer ${sbKey}`,
+              'Prefer': 'return=minimal'
+            },
+            body: JSON.stringify({
+              last_active_at: nowIso,
+              user_agent: sessionObj.user_agent
+            })
+          }).catch(() => {});
+        } catch (e) {}
+      } else {
+        try {
+          await supabaseClient.from('director_visits').upsert([sessionObj]);
+        } catch (e) {}
+      }
     }
   } catch (err) {}
 }
@@ -4515,8 +4560,18 @@ async function fetchDirectorVisits() {
             return localList;
           } catch (e) {}
         }
-        localStorage.setItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS, JSON.stringify(data));
-        return data;
+        // Merge with local list so any instant local CLOSED state is respected immediately
+        const localMap = {};
+        localList.forEach(item => { localMap[item.id] = item; });
+        const merged = data.map(row => {
+          const loc = localMap[row.id];
+          if (loc && String(loc.user_agent || '').startsWith('CLOSED|') && new Date(loc.last_active_at) >= new Date(row.last_active_at)) {
+            return loc;
+          }
+          return row;
+        });
+        localStorage.setItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS, JSON.stringify(merged));
+        return merged;
       }
     } catch (e) {}
   }
@@ -4563,8 +4618,7 @@ async function renderDirectorVisitStatusBadge() {
   }
 
   const latest = visits[0];
-  const lastActiveTime = new Date(latest.last_active_at || latest.visited_at).getTime();
-  const isOnlineNow = (Date.now() - lastActiveTime) <= 90 * 1000; // active within 90 seconds
+  const isOnlineNow = isVisitRecordOnline(latest);
 
   if (isOnlineNow) {
     dotEl.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0';
@@ -4616,8 +4670,7 @@ async function refreshDirectorVisitModal() {
   }
 
   const latest = visits[0];
-  const latestActiveMs = new Date(latest.last_active_at || latest.visited_at).getTime();
-  const isOnlineNow = (Date.now() - latestActiveMs) <= 90 * 1000;
+  const isOnlineNow = isVisitRecordOnline(latest);
 
   if (lastTimeEl) {
     lastTimeEl.innerText = formatVisitRelativeDateTime(latest.last_active_at || latest.visited_at);
@@ -4635,7 +4688,7 @@ async function refreshDirectorVisitModal() {
       const seqNum = visits.length - idx;
       const startObj = new Date(v.visited_at);
       const endObj = new Date(v.last_active_at || v.visited_at);
-      const isRowOnline = idx === 0 && (Date.now() - endObj.getTime()) <= 90 * 1000;
+      const isRowOnline = idx === 0 && isVisitRecordOnline(v);
 
       const fullDateStr = startObj.toLocaleDateString('th-TH', {
         day: 'numeric',
@@ -4646,9 +4699,7 @@ async function refreshDirectorVisitModal() {
       const durationMin = Math.max(1, Math.round((endObj.getTime() - startObj.getTime()) / 60000));
       const durationBadge = isRowOnline
         ? `<span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🟢 กำลังดูอยู่</span>`
-        : (endObj.getTime() - startObj.getTime() > 45000
-          ? `<span class="text-[10px] text-slate-400 block">เปิดดูนาน ~${durationMin} นาที</span>`
-          : '');
+        : `<span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-slate-100 text-slate-500 border border-slate-200">⚪ ปิดหน้าจอแล้ว${endObj.getTime() - startObj.getTime() > 45000 ? ` (~${durationMin} นาที)` : ''}</span>`;
 
       const tabsArr = String(v.viewed_tabs || 'สมุดบัญชีกำไร')
         .split(',')
@@ -4713,10 +4764,12 @@ async function clearDirectorVisitHistory() {
 // AUTO-REFRESH & LIVE SYNC SYSTEM (ระบบอัปเดตข้อมูลอัตโนมัติ)
 // ==========================================
 let autoRefreshTimer = null;
+let directorBadgeQuickTimer = null;
 const AUTO_REFRESH_INTERVAL_MS = 30000; // 30 seconds
 
 function initAutoRefreshSystem() {
   if (autoRefreshTimer) clearInterval(autoRefreshTimer);
+  if (directorBadgeQuickTimer) clearInterval(directorBadgeQuickTimer);
 
   // Set periodic polling
   autoRefreshTimer = setInterval(() => {
@@ -4725,12 +4778,65 @@ function initAutoRefreshSystem() {
     }
   }, AUTO_REFRESH_INTERVAL_MS);
 
-  // Instant refresh when user/director switches back to the tab
-  document.addEventListener('visibilitychange', () => {
-    if (document.visibilityState === 'visible') {
-      performSilentDataSync();
+  // Fast 5-second presence check for teacher's Director Visit Badge (or 15s heartbeat in Director Mode)
+  directorBadgeQuickTimer = setInterval(() => {
+    if (document.visibilityState !== 'visible') return;
+    if (isDirectorViewMode()) {
+      recordDirectorVisitActivity(null, false);
+    } else {
+      const profitPane = document.getElementById('tab-profit');
+      if (profitPane && !profitPane.classList.contains('hidden')) {
+        renderDirectorVisitStatusBadge();
+      }
+      const visitModal = document.getElementById('director-visit-history-modal');
+      if (visitModal && !visitModal.classList.contains('hidden')) {
+        refreshDirectorVisitModal();
+      }
     }
-  });
+  }, 5000);
+
+  // Instant close/hide detection when Director closes tab or switches app
+  if (isDirectorViewMode()) {
+    window.addEventListener('pagehide', () => {
+      recordDirectorVisitActivity(null, true);
+    });
+    window.addEventListener('beforeunload', () => {
+      recordDirectorVisitActivity(null, true);
+    });
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'hidden') {
+        recordDirectorVisitActivity(null, true);
+      } else if (document.visibilityState === 'visible') {
+        recordDirectorVisitActivity(null, false);
+        performSilentDataSync();
+      }
+    });
+  } else {
+    // Instant wakeup on teacher's screen when Director opens/closes tab
+    window.addEventListener('storage', (e) => {
+      if (e.key === STORAGE_KEYS.LOCAL_DIRECTOR_VISITS) {
+        renderDirectorVisitStatusBadge();
+        const visitModal = document.getElementById('director-visit-history-modal');
+        if (visitModal && !visitModal.classList.contains('hidden')) {
+          refreshDirectorVisitModal();
+        }
+      }
+    });
+    if (DIRECTOR_PRESENCE_CHANNEL) {
+      DIRECTOR_PRESENCE_CHANNEL.onmessage = () => {
+        renderDirectorVisitStatusBadge();
+        const visitModal = document.getElementById('director-visit-history-modal');
+        if (visitModal && !visitModal.classList.contains('hidden')) {
+          refreshDirectorVisitModal();
+        }
+      };
+    }
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible') {
+        performSilentDataSync();
+      }
+    });
+  }
 }
 
 async function performSilentDataSync() {
