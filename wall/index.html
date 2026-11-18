@@ -976,6 +976,10 @@
               <i class="fa-solid fa-share-nodes text-sm text-teal-300"></i>
               <span>แชร์ลิงก์ให้ ผอ.</span>
             </button>
+            <button id="btn-director-visit-status" type="button" onclick="openDirectorVisitHistoryModal()" class="px-3 py-2 rounded-xl bg-slate-900/45 hover:bg-slate-900/70 active:scale-95 text-emerald-100 font-semibold text-[11px] border border-white/20 backdrop-blur-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs" title="คลิกเพื่อดูประวัติการเปิดดูลิงก์ของผู้บริหาร (ซ่อนไม่ให้ ผอ. เห็น)">
+              <span id="dir-visit-badge-dot" class="w-2 h-2 rounded-full bg-slate-400 shrink-0"></span>
+              <span id="dir-visit-badge-text">👁️ ยังไม่มีการเปิดดู</span>
+            </button>
           </div>
         </div>
 
@@ -2489,6 +2493,93 @@
             ยกเลิก
           </button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: DIRECTOR LINK VISIT HISTORY (ประวัติการเข้าชมลิงก์ ผอ.) -->
+  <!-- ============================================== -->
+  <div id="director-visit-history-modal" class="fixed inset-0 z-50 bg-slate-900/75 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full shadow-2xl overflow-hidden flex flex-col max-h-[88vh] animate-scaleUp">
+      <!-- Header -->
+      <div class="p-4 sm:p-5 bg-gradient-to-r from-slate-900 via-teal-950 to-emerald-950 text-white flex items-center justify-between shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-emerald-500/20 border border-emerald-400/30 text-emerald-300 flex items-center justify-center text-lg shadow-inner">
+            <i class="fa-solid fa-eye"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2 flex-wrap">
+              <h3 class="font-black text-sm sm:text-base">ประวัติการเข้าชมลิงก์ผู้บริหาร</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">
+                🔒 คุณครูเห็นคนเดียว
+              </span>
+            </div>
+            <p class="text-[11px] text-slate-300 mt-0.5">
+              บันทึกอัตโนมัติเมื่อมีการเปิดลิงก์โหมดผู้บริหาร (?view=director) โดยฝั่ง ผอ. จะไม่เห็นหน้าต่างนี้
+            </p>
+          </div>
+        </div>
+        <button type="button" onclick="closeModal('director-visit-history-modal')" class="w-8 h-8 rounded-xl bg-white/10 hover:bg-white/20 flex items-center justify-center text-white/80 hover:text-white transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Summary Cards Strip -->
+      <div class="grid grid-cols-3 gap-2.5 p-4 bg-slate-50 border-b border-slate-200 text-xs shrink-0">
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+          <span class="text-[10px] text-slate-400 font-semibold block">จำนวนครั้งที่เปิดดู</span>
+          <span class="font-mono font-black text-base sm:text-lg text-slate-800" id="dir-visit-total-count">0 ครั้ง</span>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+          <span class="text-[10px] text-slate-400 font-semibold block">เปิดดูล่าสุดเมื่อ</span>
+          <span class="font-bold text-xs sm:text-sm text-teal-700 truncate block mt-0.5" id="dir-visit-last-time">ยังไม่มีข้อมูล</span>
+        </div>
+        <div class="bg-white p-3 rounded-2xl border border-slate-200/80 shadow-2xs">
+          <span class="text-[10px] text-slate-400 font-semibold block">สถานะปัจจุบัน</span>
+          <span class="font-bold text-xs sm:text-sm text-slate-600 flex items-center gap-1.5 mt-0.5" id="dir-visit-live-status">
+            <span class="w-2 h-2 rounded-full bg-slate-300"></span>
+            <span>ไม่ได้เปิดอยู่</span>
+          </span>
+        </div>
+      </div>
+
+      <!-- Visit Table Body -->
+      <div class="flex-1 overflow-y-auto p-4">
+        <div class="overflow-x-auto rounded-2xl border border-slate-200">
+          <table class="w-full text-left border-collapse text-xs">
+            <thead>
+              <tr class="bg-slate-100 text-slate-600 font-bold border-b border-slate-200 text-[11px]">
+                <th class="py-2.5 px-3 text-center w-14">ครั้งที่</th>
+                <th class="py-2.5 px-3">วันและเวลาที่เปิดดู</th>
+                <th class="py-2.5 px-3">อุปกรณ์ที่ใช้เปิด</th>
+                <th class="py-2.5 px-3">หน้าที่เปิดดู</th>
+              </tr>
+            </thead>
+            <tbody id="dir-visit-tbody" class="divide-y divide-slate-100">
+              <tr>
+                <td colspan="4" class="py-8 text-center text-slate-400">ยังไม่มีประวัติการเปิดดูลิงก์ผู้บริหาร</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Footer -->
+      <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-2 shrink-0 text-xs">
+        <div class="flex items-center gap-2">
+          <button type="button" onclick="refreshDirectorVisitModal()" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
+            <i class="fa-solid fa-rotate text-teal-600"></i>
+            <span>อัปเดตข้อมูล</span>
+          </button>
+          <button type="button" onclick="clearDirectorVisitHistory()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl border border-rose-200 transition flex items-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-trash-can"></i>
+            <span>ล้างประวัติ</span>
+          </button>
+        </div>
+        <button type="button" onclick="closeModal('director-visit-history-modal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition cursor-pointer">
+          ปิดหน้าต่าง
+        </button>
       </div>
     </div>
   </div>

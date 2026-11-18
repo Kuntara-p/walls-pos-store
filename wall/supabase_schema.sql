@@ -109,3 +109,21 @@ alter table public.withdrawals enable row level security;
 drop policy if exists "Allow all operations for anon on withdrawals" on public.withdrawals;
 create policy "Allow all operations for anon on withdrawals"
 on public.withdrawals for all to anon using (true) with check (true);
+
+-- 9. Create table 'director_visits' (ประวัติการเปิดดูลิงก์โหมดผู้บริหาร)
+create table if not exists public.director_visits (
+    id uuid primary key default gen_random_uuid(),
+    visited_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    last_active_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    device_label text not null default 'ไม่ระบุอุปกรณ์',
+    viewed_tabs text not null default 'สมุดบัญชีกำไร',
+    user_agent text default ''
+);
+
+create index if not exists idx_director_visits_visited_at on public.director_visits(visited_at desc);
+
+alter table public.director_visits enable row level security;
+
+drop policy if exists "Allow all operations for anon on director_visits" on public.director_visits;
+create policy "Allow all operations for anon on director_visits"
+on public.director_visits for all to anon using (true) with check (true);

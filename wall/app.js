@@ -17,6 +17,7 @@ const STORAGE_KEYS = {
   LOCAL_LOT_ORDERS: 'batch_tracker_lot_orders',
   PENDING_SALES_QUEUE: 'batch_tracker_pending_sales',
   CLEARED_TEST_WITHDRAWAL_V21: 'batch_tracker_cleared_test_w_v21',
+  LOCAL_DIRECTOR_VISITS: 'batch_tracker_director_visits',
 };
 
 // Standard 2-decimal currency rounding & safe cost parser
@@ -2573,7 +2574,20 @@ create table if not exists public.withdrawals (
 create index if not exists idx_withdrawals_created_at on public.withdrawals(created_at desc);
 alter table public.withdrawals enable row level security;
 drop policy if exists "Allow all operations for anon on withdrawals" on public.withdrawals;
-create policy "Allow all operations for anon on withdrawals" on public.withdrawals for all to anon using (true) with check (true);`;
+create policy "Allow all operations for anon on withdrawals" on public.withdrawals for all to anon using (true) with check (true);
+
+create table if not exists public.director_visits (
+    id uuid primary key default gen_random_uuid(),
+    visited_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    last_active_at timestamp with time zone default timezone('utc'::text, now()) not null,
+    device_label text not null default 'ไม่ระบุอุปกรณ์',
+    viewed_tabs text not null default 'สมุดบัญชีกำไร',
+    user_agent text default ''
+);
+create index if not exists idx_director_visits_visited_at on public.director_visits(visited_at desc);
+alter table public.director_visits enable row level security;
+drop policy if exists "Allow all operations for anon on director_visits" on public.director_visits;
+create policy "Allow all operations for anon on director_visits" on public.director_visits for all to anon using (true) with check (true);`;
 }
 
 function copySupabaseUpgradeSQL() {
@@ -2985,12 +2999,14 @@ function switchTab(tabId) {
     loadActiveLotData();
   } else if (tabId === 'history') {
     loadHistoryData();
+    if (isDirectorViewMode()) recordDirectorVisitActivity('ประวัติลอต');
   } else if (tabId === 'input') {
     updateInputField();
   } else if (tabId === 'products') {
     loadProductCatalog();
   } else if (tabId === 'profit') {
     loadProfitLedgerData();
+    if (isDirectorViewMode()) recordDirectorVisitActivity('สมุดบัญชีกำไร');
   }
 
   // Smooth scroll back to top when switching tabs
@@ -4369,9 +4385,12 @@ function applyDirectorViewMode() {
     dbBadge.innerHTML = '<span id="director-sync-dot" class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse transition-transform duration-300"></span><span>โหมดผู้บริหาร • อัปเดตสด</span>';
   }
 
-  // 4. Hide Share Button and Withdraw buttons in Profit tab
+  // 4. Hide Share Button, Visit Status Badge, and Withdraw buttons in Profit tab
   const shareBtn = document.getElementById('btn-share-director');
   if (shareBtn) shareBtn.classList.add('hidden');
+
+  const visitStatusBtn = document.getElementById('btn-director-visit-status');
+  if (visitStatusBtn) visitStatusBtn.classList.add('hidden');
 
   document.querySelectorAll('button[onclick*="openWithdrawModal"]').forEach(btn => {
     btn.classList.add('hidden');
@@ -4383,6 +4402,311 @@ function applyDirectorViewMode() {
 
   // 6. Default to profit tab
   switchTab('profit');
+}
+
+// ==========================================
+// DIRECTOR VISIT TRACKING & HISTORY (เฉพาะคุณครูเห็นเท่านั้น)
+// ==========================================
+function detectVisitorDeviceLabel(ua = navigator.userAgent || '') {
+  const s = String(ua);
+  const isLine = /Line\//i.test(s);
+  const browserSuffix = isLine
+    ? ' (LINE Browser)'
+    : /Edg\//i.test(s)
+      ? ' (Edge)'
+      : /Chrome\//i.test(s) && !/Chromium/i.test(s)
+        ? ' (Chrome)'
+        : /Safari\//i.test(s) && !/Chrome\//i.test(s)
+          ? ' (Safari)'
+          : '';
+
+  if (/iPad/i.test(s) || (/Macintosh/i.test(s) && navigator.maxTouchPoints > 1)) {
+    return `📲 iPad / แท็บเล็ต${browserSuffix}`;
+  }
+  if (/iPhone/i.test(s)) {
+    return `📱 มือถือ iPhone${browserSuffix}`;
+  }
+  if (/Android/i.test(s)) {
+    return /Mobile/i.test(s) ? `📱 มือถือ Android${browserSuffix}` : `📲 แท็บเล็ต Android${browserSuffix}`;
+  }
+  if (/Windows/i.test(s)) {
+    return `💻 คอมพิวเตอร์ Windows${browserSuffix}`;
+  }
+  if (/Macintosh|Mac OS X/i.test(s)) {
+    return `💻 คอมพิวเตอร์ Mac${browserSuffix}`;
+  }
+  return `🌐 อุปกรณ์เว็บ${browserSuffix}`;
+}
+
+async function recordDirectorVisitActivity(tabLabel = null) {
+  if (!isDirectorViewMode()) return;
+  try {
+    const SESSION_KEY = 'walls_director_visit_session_v1';
+    const nowIso = new Date().toISOString();
+    let sessionObj = null;
+
+    try {
+      const rawSession = sessionStorage.getItem(SESSION_KEY);
+      if (rawSession) sessionObj = JSON.parse(rawSession);
+    } catch (e) {}
+
+    // Start a new session if none exists or if older than 30 minutes
+    const isExpired = !sessionObj || !sessionObj.last_active_at || (Date.now() - new Date(sessionObj.last_active_at).getTime() > 30 * 60 * 1000);
+
+    if (isExpired) {
+      sessionObj = {
+        id: generateUUID(),
+        visited_at: nowIso,
+        last_active_at: nowIso,
+        device_label: detectVisitorDeviceLabel(),
+        viewed_tabs: tabLabel || 'สมุดบัญชีกำไร',
+        user_agent: (navigator.userAgent || '').slice(0, 250)
+      };
+    } else {
+      sessionObj.last_active_at = nowIso;
+      if (tabLabel) {
+        const currentTabs = (sessionObj.viewed_tabs || '')
+          .split(',')
+          .map(t => t.trim())
+          .filter(Boolean);
+        if (!currentTabs.includes(tabLabel)) {
+          currentTabs.push(tabLabel);
+          sessionObj.viewed_tabs = currentTabs.join(', ');
+        }
+      }
+    }
+
+    try {
+      sessionStorage.setItem(SESSION_KEY, JSON.stringify(sessionObj));
+    } catch (e) {}
+
+    // Save to localStorage fallback
+    const localList = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS) || '[]');
+    const existingIdx = localList.findIndex(v => v.id === sessionObj.id);
+    if (existingIdx !== -1) {
+      localList[existingIdx] = sessionObj;
+    } else {
+      localList.unshift(sessionObj);
+    }
+    localStorage.setItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS, JSON.stringify(localList.slice(0, 100)));
+
+    // Sync to Supabase director_visits table if online
+    if (!isOfflineMode && supabaseClient) {
+      try {
+        await supabaseClient.from('director_visits').upsert([sessionObj]);
+      } catch (e) {}
+    }
+  } catch (err) {}
+}
+
+async function fetchDirectorVisits() {
+  const localList = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS) || '[]');
+  if (!isOfflineMode && supabaseClient) {
+    try {
+      const { data, error } = await supabaseClient
+        .from('director_visits')
+        .select('*')
+        .order('visited_at', { ascending: false })
+        .limit(100);
+      if (!error && Array.isArray(data)) {
+        if (data.length === 0 && localList.length > 0) {
+          try {
+            await supabaseClient.from('director_visits').upsert(localList);
+            return localList;
+          } catch (e) {}
+        }
+        localStorage.setItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS, JSON.stringify(data));
+        return data;
+      }
+    } catch (e) {}
+  }
+  return localList.sort((a, b) => new Date(b.visited_at) - new Date(a.visited_at));
+}
+
+function formatVisitRelativeDateTime(isoStr) {
+  if (!isoStr) return '-';
+  const d = new Date(isoStr);
+  if (isNaN(d.getTime())) return '-';
+  const now = new Date();
+  const isToday = d.toDateString() === now.toDateString();
+  const yesterday = new Date(now);
+  yesterday.setDate(now.getDate() - 1);
+  const isYesterday = d.toDateString() === yesterday.toDateString();
+  const timeStr = d.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+
+  if (isToday) return `วันนี้ ${timeStr} น.`;
+  if (isYesterday) return `เมื่อวาน ${timeStr} น.`;
+  const dateStr = d.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' });
+  return `${dateStr} เวลา ${timeStr} น.`;
+}
+
+async function renderDirectorVisitStatusBadge() {
+  const btn = document.getElementById('btn-director-visit-status');
+  if (!btn) return;
+
+  if (isDirectorViewMode()) {
+    btn.classList.add('hidden');
+    return;
+  }
+  btn.classList.remove('hidden');
+
+  const dotEl = document.getElementById('dir-visit-badge-dot');
+  const textEl = document.getElementById('dir-visit-badge-text');
+  if (!dotEl || !textEl) return;
+
+  const visits = await fetchDirectorVisits();
+  if (!visits || visits.length === 0) {
+    dotEl.className = 'w-2 h-2 rounded-full bg-slate-400 shrink-0';
+    textEl.innerText = '👁️ ยังไม่มีการเปิดดู';
+    btn.className = 'px-3 py-2 rounded-xl bg-slate-900/45 hover:bg-slate-900/70 active:scale-95 text-emerald-100 font-semibold text-[11px] border border-white/20 backdrop-blur-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs';
+    return;
+  }
+
+  const latest = visits[0];
+  const lastActiveTime = new Date(latest.last_active_at || latest.visited_at).getTime();
+  const isOnlineNow = (Date.now() - lastActiveTime) <= 90 * 1000; // active within 90 seconds
+
+  if (isOnlineNow) {
+    dotEl.className = 'w-2.5 h-2.5 rounded-full bg-emerald-400 animate-ping shrink-0';
+    textEl.innerText = `🟢 ผอ. กำลังเปิดดูรายงานอยู่ตอนนี้! (ดูแล้ว ${visits.length} ครั้ง)`;
+    btn.className = 'px-3 py-2 rounded-xl bg-emerald-950/90 hover:bg-emerald-900 active:scale-95 text-emerald-200 font-extrabold text-[11px] border-2 border-emerald-400/70 backdrop-blur-xs transition flex items-center space-x-2 cursor-pointer shadow-md';
+  } else {
+    const lastStr = formatVisitRelativeDateTime(latest.last_active_at || latest.visited_at);
+    dotEl.className = 'w-2 h-2 rounded-full bg-teal-300 shrink-0';
+    textEl.innerText = `👁️ เปิดดูล่าสุด: ${lastStr} (ดูแล้ว ${visits.length} ครั้ง)`;
+    btn.className = 'px-3 py-2 rounded-xl bg-slate-900/55 hover:bg-slate-900/80 active:scale-95 text-emerald-100 font-bold text-[11px] border border-emerald-300/35 backdrop-blur-xs transition flex items-center space-x-1.5 cursor-pointer shadow-xs';
+  }
+}
+
+async function openDirectorVisitHistoryModal() {
+  if (isDirectorViewMode()) return;
+  const modal = document.getElementById('director-visit-history-modal');
+  if (modal) modal.classList.remove('hidden');
+  await refreshDirectorVisitModal();
+}
+
+async function refreshDirectorVisitModal() {
+  if (isDirectorViewMode()) return;
+  const tbody = document.getElementById('dir-visit-tbody');
+  const countEl = document.getElementById('dir-visit-total-count');
+  const lastTimeEl = document.getElementById('dir-visit-last-time');
+  const liveStatusEl = document.getElementById('dir-visit-live-status');
+
+  const visits = await fetchDirectorVisits();
+  await renderDirectorVisitStatusBadge();
+
+  if (countEl) countEl.innerText = `${visits.length} ครั้ง`;
+
+  if (!visits || visits.length === 0) {
+    if (lastTimeEl) lastTimeEl.innerText = 'ยังไม่มีข้อมูล';
+    if (liveStatusEl) {
+      liveStatusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-300"></span><span class="text-slate-500">ยังไม่มีผู้เข้าชม</span>`;
+    }
+    if (tbody) {
+      tbody.innerHTML = `
+        <tr>
+          <td colspan="4" class="py-10 text-center text-slate-400">
+            <i class="fa-regular fa-eye-slash text-2xl mb-2 block text-slate-300"></i>
+            ยังไม่มีประวัติการเปิดดูลิงก์ผู้บริหาร (?view=director)
+          </td>
+        </tr>
+      `;
+    }
+    return;
+  }
+
+  const latest = visits[0];
+  const latestActiveMs = new Date(latest.last_active_at || latest.visited_at).getTime();
+  const isOnlineNow = (Date.now() - latestActiveMs) <= 90 * 1000;
+
+  if (lastTimeEl) {
+    lastTimeEl.innerText = formatVisitRelativeDateTime(latest.last_active_at || latest.visited_at);
+  }
+  if (liveStatusEl) {
+    if (isOnlineNow) {
+      liveStatusEl.innerHTML = `<span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-ping"></span><span class="text-emerald-700 font-black">กำลังเปิดดูอยู่ตอนนี้!</span>`;
+    } else {
+      liveStatusEl.innerHTML = `<span class="w-2 h-2 rounded-full bg-slate-400"></span><span class="text-slate-600">ปิดหน้าจอไปแล้ว</span>`;
+    }
+  }
+
+  if (tbody) {
+    tbody.innerHTML = visits.map((v, idx) => {
+      const seqNum = visits.length - idx;
+      const startObj = new Date(v.visited_at);
+      const endObj = new Date(v.last_active_at || v.visited_at);
+      const isRowOnline = idx === 0 && (Date.now() - endObj.getTime()) <= 90 * 1000;
+
+      const fullDateStr = startObj.toLocaleDateString('th-TH', {
+        day: 'numeric',
+        month: 'short',
+        year: '2-digit'
+      });
+      const startTimeStr = startObj.toLocaleTimeString('th-TH', { hour: '2-digit', minute: '2-digit' });
+      const durationMin = Math.max(1, Math.round((endObj.getTime() - startObj.getTime()) / 60000));
+      const durationBadge = isRowOnline
+        ? `<span class="ml-1.5 px-2 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 text-emerald-800 border border-emerald-300">🟢 กำลังดูอยู่</span>`
+        : (endObj.getTime() - startObj.getTime() > 45000
+          ? `<span class="text-[10px] text-slate-400 block">เปิดดูนาน ~${durationMin} นาที</span>`
+          : '');
+
+      const tabsArr = String(v.viewed_tabs || 'สมุดบัญชีกำไร')
+        .split(',')
+        .map(t => t.trim())
+        .filter(Boolean);
+
+      const tabsBadgesHtml = tabsArr.map(t => {
+        const isProfit = t.includes('กำไร') || t.includes('สมุด');
+        return `<span class="inline-flex items-center gap-1 px-2 py-0.5 rounded-lg text-[10px] font-bold ${isProfit ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : 'bg-blue-50 text-blue-700 border border-blue-200'}">${isProfit ? '📗' : '📜'} ${escapeHtml(t)}</span>`;
+      }).join(' ');
+
+      return `
+        <tr class="${isRowOnline ? 'bg-emerald-50/50' : 'hover:bg-slate-50/80'} transition">
+          <td class="py-3 px-3 text-center font-mono font-bold text-slate-500">
+            #${seqNum}
+          </td>
+          <td class="py-3 px-3 whitespace-nowrap">
+            <div class="font-bold text-slate-800 flex items-center flex-wrap">
+              <span>${fullDateStr} เวลา ${startTimeStr} น.</span>
+              ${durationBadge}
+            </div>
+            <span class="text-[10px] text-slate-400">${formatVisitRelativeDateTime(v.visited_at)}</span>
+          </td>
+          <td class="py-3 px-3 font-semibold text-slate-700">
+            ${escapeHtml(v.device_label || 'ไม่ระบุอุปกรณ์')}
+          </td>
+          <td class="py-3 px-3">
+            <div class="flex items-center gap-1 flex-wrap">
+              ${tabsBadgesHtml}
+            </div>
+          </td>
+        </tr>
+      `;
+    }).join('');
+  }
+}
+
+async function clearDirectorVisitHistory() {
+  if (isDirectorViewMode()) return;
+  const confirmed = await showConfirmDialog({
+    title: 'ยืนยันล้างประวัติการเข้าชมของ ผอ.?',
+    message: 'ประวัติการเปิดดูลิงก์ผู้บริหารทั้งหมดจะถูกล้างและเริ่มนับ 0 ใหม่',
+    confirmText: 'ล้างประวัติ',
+    cancelText: 'ยกเลิก',
+    type: 'danger',
+    icon: 'fa-trash-can'
+  });
+  if (!confirmed) return;
+
+  localStorage.removeItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS);
+  if (!isOfflineMode && supabaseClient) {
+    try {
+      await supabaseClient.from('director_visits').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    } catch (e) {}
+  }
+
+  await refreshDirectorVisitModal();
+  showToast('ล้างประวัติการเข้าชมลิงก์ผู้บริหารเรียบร้อยแล้ว', 'info');
 }
 
 // ==========================================
@@ -4418,9 +4742,14 @@ async function performSilentDataSync() {
       await flushPendingSalesQueue();
     }
 
+    // If in Director mode, keep session heartbeat alive while visible
+    if (isDirectorViewMode()) {
+      await recordDirectorVisitActivity();
+    }
+
     // If any modal is open in Admin mode, avoid interrupting user input
     const isModalOpen = document.querySelector(
-      '.modal:not(.hidden), #close-lot-modal:not(.hidden), #withdraw-profit-modal:not(.hidden), #edit-remark-modal:not(.hidden), #active-lot-order-modal:not(.hidden), #edit-cost-modal:not(.hidden), #edit-sale-modal:not(.hidden), #config-modal:not(.hidden), #product-modal:not(.hidden)'
+      '.modal:not(.hidden), #close-lot-modal:not(.hidden), #withdraw-profit-modal:not(.hidden), #edit-remark-modal:not(.hidden), #active-lot-order-modal:not(.hidden), #edit-cost-modal:not(.hidden), #edit-sale-modal:not(.hidden), #config-modal:not(.hidden), #product-modal:not(.hidden), #director-visit-history-modal:not(.hidden)'
     );
     if (isModalOpen && !isDirectorViewMode()) return;
 
@@ -4997,6 +5326,8 @@ async function loadProfitLedgerData() {
         document.querySelectorAll('button[onclick*="openWithdrawModal"]').forEach(btn => btn.classList.add('hidden'));
         const shareBtn = document.getElementById('btn-share-director');
         if (shareBtn) shareBtn.classList.add('hidden');
+        const visitStatusBtn = document.getElementById('btn-director-visit-status');
+        if (visitStatusBtn) visitStatusBtn.classList.add('hidden');
       }
 
       if (tfoot) {
@@ -5028,6 +5359,9 @@ async function loadProfitLedgerData() {
       }
     }
   }
+
+  // Update Director visit status pill on teacher's Profit Ledger header
+  await renderDirectorVisitStatusBadge();
 }
 
 // Withdrawal Modal Operations
