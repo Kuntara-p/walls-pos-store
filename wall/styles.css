@@ -2,6 +2,10 @@
    Ice Cream Batch Tracker - Responsive Laptop & Mobile Styles
    ======================================================== */
 
+body, button, input, select, textarea {
+  font-family: 'Prompt', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Noto Sans Thai", "Thonburi", sans-serif;
+}
+
 /* Prevent double-tap zoom on touch screens */
 button {
   touch-action: manipulation;
@@ -242,17 +246,25 @@ body.walls-theme-bg {
   #edit-cost-modal,
   #edit-sale-modal,
   #product-modal,
+  #withdraw-profit-modal,
+  #edit-remark-modal,
+  .hidden,
+  [hidden],
   .no-print {
     display: none !important;
   }
 
   #a4-report-modal.hidden,
-  #po-report-modal.hidden {
+  #po-report-modal.hidden,
+  #voucher-modal.hidden,
+  #profit-report-modal.hidden {
     display: none !important;
   }
 
   #a4-report-modal:not(.hidden),
-  #po-report-modal:not(.hidden) {
+  #po-report-modal:not(.hidden),
+  #voucher-modal:not(.hidden),
+  #profit-report-modal:not(.hidden) {
     position: static !important;
     display: block !important;
     background: transparent !important;
@@ -261,7 +273,9 @@ body.walls-theme-bg {
   }
 
   #a4-report-sheet,
-  #po-report-sheet {
+  #po-report-sheet,
+  #voucher-sheet,
+  #profit-report-sheet {
     width: 100% !important;
     max-width: none !important;
     box-shadow: none !important;

@@ -18,8 +18,13 @@
   <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
   <meta name="theme-color" content="#E4002B">
   
-  <!-- Tailwind CSS CDN -->
-  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Tailwind CSS: Local Standalone (Offline-Ready) with CDN Fallback -->
+  <script src="tailwind.min.js"></script>
+  <script>
+    if (!window.tailwind) {
+      document.write('<script src="https://cdn.tailwindcss.com"><\/script>');
+    }
+  </script>
   
   <!-- Supabase JS Client CDN -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -68,49 +73,53 @@
       <div class="flex items-center justify-between h-16 gap-3">
         
         <!-- Left: Wall's Heartbrand App Logo -->
-        <div class="flex items-center space-x-3 cursor-pointer group shrink-0" onclick="switchTab('dashboard')">
-          <div class="w-11 h-11 rounded-full bg-white text-[#E4002B] flex items-center justify-center shadow-sm transform group-hover:scale-105 transition shrink-0">
-            <i class="fa-solid fa-heart text-xl text-[#E4002B]"></i>
+        <div class="flex items-center space-x-2 sm:space-x-2.5 cursor-pointer group shrink-0" onclick="switchTab(typeof isDirectorViewMode === 'function' && isDirectorViewMode() ? 'profit' : 'dashboard')">
+          <div class="w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-white text-[#E4002B] flex items-center justify-center shadow-sm transform group-hover:scale-105 transition shrink-0">
+            <i class="fa-solid fa-heart text-lg text-[#E4002B]"></i>
           </div>
           <div class="whitespace-nowrap">
-            <div class="flex items-center space-x-2">
-              <h1 class="font-extrabold text-lg sm:text-xl tracking-tight leading-none text-white">Wall's</h1>
-              <span class="bg-amber-400 text-slate-900 text-[11px] font-extrabold px-2.5 py-0.5 rounded-full tracking-wide shadow-xs">POS & STORE</span>
+            <div class="flex items-center space-x-1.5">
+              <h1 class="font-extrabold text-base sm:text-lg tracking-tight leading-none text-white">Wall's</h1>
+              <span class="bg-amber-400 text-slate-900 text-[10px] font-extrabold px-2 py-0.5 rounded-full tracking-wide shadow-xs">POS</span>
             </div>
-            <p class="text-[11px] sm:text-xs text-white/95 font-medium leading-tight mt-1">ระบบขายไอศกรีมวอลล์</p>
+            <p class="text-[10px] sm:text-[11px] text-white/95 font-medium leading-tight mt-0.5 hidden xs:block">ระบบขายไอศกรีมวอลล์</p>
           </div>
         </div>
 
-        <!-- Center: Desktop Navigation Tabs (Single-line, No Wrapping) -->
-        <nav class="hidden md:flex items-center space-x-1 bg-black/15 backdrop-blur-md p-1 rounded-2xl border border-white/15 shrink-0">
-          <button onclick="switchTab('dashboard')" id="desk-nav-dashboard" class="desk-nav-btn active px-3.5 py-2 rounded-xl text-xs font-bold transition flex items-center space-x-1.5 bg-white text-rose-600 shadow-sm whitespace-nowrap">
-            <i class="fa-solid fa-chart-pie"></i>
+        <!-- Center: Desktop Navigation Tabs (Single-line, Compact & Responsive) -->
+        <nav class="hidden md:flex items-center space-x-0.5 lg:space-x-1 bg-black/15 backdrop-blur-md p-1 rounded-2xl border border-white/15 shrink-0">
+          <button onclick="switchTab('dashboard')" id="desk-nav-dashboard" class="desk-nav-btn active px-2 lg:px-3 py-1.5 rounded-xl text-[11px] lg:text-xs font-bold transition flex items-center space-x-1 lg:space-x-1.5 bg-white text-rose-600 shadow-sm whitespace-nowrap">
+            <i class="fa-solid fa-chart-pie text-[11px]"></i>
             <span>สรุปสถานะ</span>
           </button>
-          <button onclick="switchTab('input')" id="desk-nav-input" class="desk-nav-btn px-3.5 py-2 rounded-xl text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1.5 whitespace-nowrap">
-            <i class="fa-solid fa-calculator"></i>
+          <button onclick="switchTab('input')" id="desk-nav-input" class="desk-nav-btn px-2 lg:px-3 py-1.5 rounded-xl text-[11px] lg:text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1 lg:space-x-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-calculator text-[11px]"></i>
             <span>บันทึกยอดเงินสด</span>
           </button>
-          <button onclick="switchTab('history')" id="desk-nav-history" class="desk-nav-btn px-3.5 py-2 rounded-xl text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1.5 whitespace-nowrap">
-            <i class="fa-solid fa-file-invoice-dollar"></i>
+          <button onclick="switchTab('history')" id="desk-nav-history" class="desk-nav-btn px-2 lg:px-3 py-1.5 rounded-xl text-[11px] lg:text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1 lg:space-x-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-file-invoice-dollar text-[11px]"></i>
             <span>ประวัติลอต</span>
           </button>
-          <button onclick="switchTab('products')" id="desk-nav-products" class="desk-nav-btn px-3.5 py-2 rounded-xl text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1.5 whitespace-nowrap">
-            <i class="fa-solid fa-boxes-stacked"></i>
+          <button onclick="switchTab('products')" id="desk-nav-products" class="desk-nav-btn px-2 lg:px-3 py-1.5 rounded-xl text-[11px] lg:text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1 lg:space-x-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-boxes-stacked text-[11px]"></i>
             <span>สินค้า & ใบสั่งซื้อ</span>
+          </button>
+          <button onclick="switchTab('profit')" id="desk-nav-profit" class="desk-nav-btn px-2 lg:px-3 py-1.5 rounded-xl text-[11px] lg:text-xs font-medium text-white/90 hover:text-white hover:bg-white/10 transition flex items-center space-x-1 lg:space-x-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-wallet text-[11px]"></i>
+            <span>สมุดบัญชีกำไร</span>
           </button>
         </nav>
 
         <!-- Right: Compact Sound Toggle & Single-line Status Badge -->
-        <div class="flex items-center space-x-2 shrink-0">
-          <button onclick="toggleWallsSound()" id="btn-sound-toggle" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-amber-200 border border-white/25 transition cursor-pointer whitespace-nowrap" title="เปิด/ปิดเสียงกระดิ่งรถไอติมวอลล์เวลาบันทึกยอด">
-            <i class="fa-solid fa-bell walls-bell-anim" id="sound-toggle-icon"></i>
-            <span class="hidden lg:inline text-[11px]" id="sound-toggle-text">เสียงกริ๊ง</span>
+        <div class="flex items-center space-x-1.5 shrink-0">
+          <button onclick="toggleWallsSound()" id="btn-sound-toggle" class="flex items-center space-x-1 px-2.5 py-1.5 rounded-full text-xs font-bold bg-white/15 hover:bg-white/25 text-amber-200 border border-white/25 transition cursor-pointer whitespace-nowrap" title="เปิด/ปิดเสียงกระดิ่งรถไอศกรีมวอลล์เวลาบันทึกยอด">
+            <i class="fa-solid fa-bell walls-bell-anim text-xs" id="sound-toggle-icon"></i>
+            <span class="hidden xl:inline text-[11px]" id="sound-toggle-text">เสียงกริ๊ง</span>
           </button>
 
-          <button onclick="openConfigModal()" id="db-status-badge" class="flex items-center space-x-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-white/15 hover:bg-white/25 transition border border-white/25 backdrop-blur-sm cursor-pointer shadow-sm whitespace-nowrap" title="คลิกเพื่อตั้งค่าเชื่อมต่อ Supabase หรือโหมดในเครื่อง">
+          <button onclick="openConfigModal()" id="db-status-badge" class="flex items-center space-x-1.5 px-2.5 py-1.5 rounded-full text-xs font-semibold bg-white/15 hover:bg-white/25 transition border border-white/25 backdrop-blur-sm cursor-pointer shadow-sm whitespace-nowrap" title="คลิกเพื่อตั้งค่าเชื่อมต่อ Supabase หรือโหมดในเครื่อง">
             <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse shrink-0" id="db-status-dot"></span>
-            <span id="db-status-text" class="hidden sm:inline">ออนไลน์</span>
+            <span id="db-status-text" class="hidden xl:inline text-[11px]">ออนไลน์</span>
             <i class="fa-solid fa-gear text-xs opacity-80"></i>
           </button>
         </div>
@@ -458,7 +467,7 @@
             <button type="button" onclick="appendNoteTag('📋 งดขาย: ครูติดประชุม/ไปราชการ', true)" class="note-tag px-2.5 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100 border border-amber-200 text-[11px] text-amber-800 font-semibold transition">📋 ครูติดประชุม/ไปราชการ</button>
             <button type="button" onclick="appendNoteTag('🏫 งดขาย: กิจกรรมโรงเรียน/สอบ', true)" class="note-tag px-2.5 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 text-[11px] text-indigo-700 font-semibold transition">🏫 กิจกรรมโรงเรียน/สอบ</button>
             <button type="button" onclick="appendNoteTag('🌧️ งดขาย: ฝนตกหนัก', true)" class="note-tag px-2.5 py-1.5 rounded-xl bg-sky-50 hover:bg-sky-100 border border-sky-200 text-[11px] text-sky-700 font-semibold transition">🌧️ ฝนตกหนักงดขาย</button>
-            <button type="button" onclick="appendNoteTag('📦 งดขาย: ไอติมหมด/รอของมาส่ง', true)" class="note-tag px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[11px] text-slate-700 font-semibold transition">📦 ไอติมหมด/รอของมาส่ง</button>
+            <button type="button" onclick="appendNoteTag('📦 งดขาย: ไอศกรีมหมด/รอของมาส่ง', true)" class="note-tag px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 border border-slate-200 text-[11px] text-slate-700 font-semibold transition">📦 ไอศกรีมหมด/รอของมาส่ง</button>
           </div>
         </div>
 
@@ -517,6 +526,127 @@
         </div>
       </div>
 
+      <!-- Active Lot Profit Forecast Card (การ์ดคาดการณ์กำไรลอตปัจจุบันที่กำลังขาย) -->
+      <div id="hist-active-forecast-card" class="bg-gradient-to-br from-amber-500/10 via-rose-500/5 to-white rounded-3xl p-5 sm:p-6 shadow-sm border border-amber-200/80 relative overflow-hidden space-y-4">
+        <!-- Background decorative watermark -->
+        <div class="absolute -right-6 -bottom-6 text-amber-500/10 text-9xl pointer-events-none select-none">
+          <i class="fa-solid fa-ice-cream"></i>
+        </div>
+
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10 border-b border-amber-200/60 pb-3">
+          <div class="flex items-center space-x-3">
+            <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
+              <i class="fa-solid fa-chart-line-up"></i>
+            </div>
+            <div>
+              <div class="flex items-center gap-2 flex-wrap">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-xs font-black bg-rose-600 text-white shadow-xs">
+                  <span class="w-1.5 h-1.5 rounded-full bg-white animate-ping"></span>
+                  <span>กำลังขาย</span>
+                </span>
+                <h3 class="font-black text-sm sm:text-base text-slate-900" id="hist-forecast-lot-title">
+                  งวดที่ 2 (ลอตปัจจุบัน)
+                </h3>
+                <span class="text-xs text-slate-500" id="hist-forecast-lot-dates">
+                  • เริ่มเปิดขาย 10 พ.ย. 69
+                </span>
+              </div>
+              <p class="text-xs text-slate-600 mt-0.5">
+                พยากรณ์กำไรที่จะได้เมื่อขายไอศกรีมหมดลอตนี้ คำนวณจากรายการสินค้าและราคาต้นทุนจริง
+              </p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-2 shrink-0" id="hist-forecast-btn-container">
+            <button type="button" onclick="openActiveLotOrderModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer">
+              <i class="fa-solid fa-boxes-packing text-sm"></i>
+              <span id="hist-forecast-btn-text">ใส่รายการไอติมที่สั่งในลอตนี้</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- 4 Metric Cards Grid -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 relative z-10">
+          <!-- Metric 1: Cost (จ่ายบริษัท) -->
+          <div class="bg-white/90 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between text-slate-500 text-[11px] font-semibold">
+              <span>ต้นทุนจ่ายบริษัท</span>
+              <i class="fa-solid fa-truck text-rose-500"></i>
+            </div>
+            <div class="font-mono font-bold text-base sm:text-xl text-rose-600 tabular-nums" id="hist-forecast-cost">
+              ฿5,031.05
+            </div>
+            <p class="text-[10px] text-slate-400 truncate" id="hist-forecast-cost-sub">
+              ค่าไอศกรีมเหมาลอต
+            </p>
+          </div>
+
+          <!-- Metric 2: Full Sales Revenue (ยอดขายเมื่อหมดตู้) -->
+          <div class="bg-white/90 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between text-slate-500 text-[11px] font-semibold">
+              <span>ยอดขายเมื่อหมดตู้</span>
+              <i class="fa-solid fa-calculator text-blue-500"></i>
+            </div>
+            <div class="font-mono font-bold text-base sm:text-xl text-blue-700 tabular-nums" id="hist-forecast-revenue">
+              ฿5,850.00
+            </div>
+            <p class="text-[10px] text-slate-400 truncate" id="hist-forecast-revenue-sub">
+              ราคาขายปลีกรวมทุกแท่ง
+            </p>
+          </div>
+
+          <!-- Metric 3: Projected Net Profit (กำไรที่จะได้ในลอตนี้) -->
+          <div class="bg-emerald-50/90 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border-2 border-emerald-400 shadow-sm space-y-1">
+            <div class="flex items-center justify-between text-emerald-800 text-[11px] font-bold">
+              <span>กำไรที่จะได้ในลอตนี้</span>
+              <span class="px-1.5 py-0.5 rounded-md bg-emerald-200 text-emerald-900 text-[9px] font-black" id="hist-forecast-margin-badge">+16.3%</span>
+            </div>
+            <div class="font-mono font-black text-lg sm:text-2xl text-emerald-700 tabular-nums" id="hist-forecast-profit">
+              +฿818.95
+            </div>
+            <p class="text-[10px] text-emerald-700 font-medium truncate" id="hist-forecast-profit-sub">
+              กำไรสุทธิเตรียมเข้ากระปุก
+            </p>
+          </div>
+
+          <!-- Metric 4: Current Realized Sales (เก็บเงินได้แล้ว) -->
+          <div class="bg-white/90 backdrop-blur-xs p-3.5 sm:p-4 rounded-2xl border border-slate-200/80 shadow-2xs space-y-1">
+            <div class="flex items-center justify-between text-slate-500 text-[11px] font-semibold">
+              <span>เก็บเงินสดได้แล้ว</span>
+              <span class="text-[10px] font-bold text-slate-600" id="hist-forecast-progress-pct">46.9%</span>
+            </div>
+            <div class="font-mono font-bold text-base sm:text-xl text-slate-800 tabular-nums" id="hist-forecast-collected">
+              ฿2,745.00
+            </div>
+            <p class="text-[10px] text-slate-400 truncate" id="hist-forecast-collected-sub">
+              เหลืออีก ฿3,105 จะหมดตู้
+            </p>
+          </div>
+        </div>
+
+        <!-- Progress Bar & Order Details Strip -->
+        <div class="bg-white/80 rounded-2xl p-3 border border-slate-200/70 space-y-2 relative z-10 text-xs">
+          <div class="flex items-center justify-between text-[11px] text-slate-600 font-medium">
+            <span class="flex items-center gap-1.5">
+              <i class="fa-solid fa-flag-checkered text-rose-500"></i>
+              <span>ความคืบหน้าการขายสู่เป้าหมายกำไร</span>
+            </span>
+            <span id="hist-forecast-status-label" class="text-slate-500 font-mono">
+              ขายได้ ฿2,745.00 จากเป้าหมาย ฿5,850.00
+            </span>
+          </div>
+
+          <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden p-0.5 border border-slate-200 flex">
+            <div id="hist-forecast-bar" class="bg-gradient-to-r from-blue-500 via-rose-500 to-emerald-500 h-full rounded-full transition-all duration-500" style="width: 46.9%;"></div>
+          </div>
+
+          <!-- Quick items breakdown pill list -->
+          <div class="flex items-center justify-between pt-1 text-[11px] text-slate-500 flex-wrap gap-2" id="hist-forecast-items-summary">
+            <!-- Injected by JavaScript: e.g. "สั่งไอศกรีม 10 ลัง (240 แท่ง): คอร์นเนตโต 3, แม็กนั่ม 2, แพดเดิลป๊อป 5" -->
+          </div>
+        </div>
+      </div>
+
       <!-- ตารางแบบที่ 1: ตารางสรุปบัญชีรายรับ-รายจ่าย รายลอต (Lot Summary Ledger) -->
       <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200 space-y-4">
         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
@@ -525,7 +655,7 @@
               <span class="w-6 h-6 rounded-lg bg-emerald-100 text-emerald-700 text-xs font-black flex items-center justify-center">1</span>
               <span>ตารางแบบที่ 1: สรุปบัญชีรายรับ - รายจ่าย รายลอต (Lot Summary)</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">สรุปยอดรายรับ รายจ่าย(ค่าซื้อไอติม) และกำไรสุทธิของแต่ละลอต (เช่น ลอต 1, ลอต 2... ไม่เอายอดรายวันมาปน)</p>
+            <p class="text-xs text-slate-400 mt-0.5">สรุปยอดรายรับ รายจ่าย(ค่าซื้อไอศกรีม) และกำไรสุทธิของแต่ละลอต (เช่น ลอต 1, ลอต 2... ไม่เอายอดรายวันมาปน)</p>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <button onclick="openA4ReportModal('lot_summary')" class="px-3 py-1.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 text-xs font-bold transition flex items-center gap-1.5">
@@ -570,7 +700,7 @@
               <span class="w-6 h-6 rounded-lg bg-blue-100 text-blue-700 text-xs font-black flex items-center justify-center">2</span>
               <span>ตารางแบบที่ 2: บัญชีรายรับ - รายจ่าย แจกแจงรายวัน (Daily Ledger)</span>
             </h3>
-            <p class="text-xs text-slate-400 mt-0.5">แสดงรายละเอียดวันซื้อไอติมเหมาลอต และยอดเงินสดที่ขายได้ในแต่ละวัน แยกกะเที่ยง/บ่าย พร้อมยอดคงเหลือสะสม</p>
+            <p class="text-xs text-slate-400 mt-0.5">แสดงรายละเอียดวันซื้อไอศกรีมเหมาลอต และยอดเงินสดที่ขายได้ในแต่ละวัน แยกกะเที่ยง/บ่าย พร้อมยอดคงเหลือสะสม</p>
           </div>
           <div class="flex items-center gap-2 shrink-0">
             <select id="hist-daily-filter" onchange="renderOnScreenDailyLedger(this.value)" class="px-3 py-1.5 rounded-xl bg-slate-100 border border-slate-200 text-slate-700 text-xs font-semibold outline-none">
@@ -807,6 +937,217 @@
 
     </section>
 
+    <!-- ============================================== -->
+    <!-- SECTION 5: PROFIT LEDGER (สมุดบัญชีกำไร & กองทุนโรงเรียน) -->
+    <!-- ============================================== -->
+    <section id="tab-profit" class="tab-pane hidden space-y-6">
+      
+      <!-- Top Hero Banner: School Fund & Profit Ledger -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-600 via-teal-700 to-emerald-900 text-white p-6 sm:p-8 shadow-xl border border-emerald-500/20">
+        <div class="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
+          <div class="space-y-1.5">
+            <div class="inline-flex items-center space-x-2 bg-emerald-500/30 backdrop-blur-md px-3 py-1 rounded-full text-xs font-semibold text-emerald-100 border border-emerald-400/30">
+              <i class="fa-solid fa-piggy-bank text-amber-300"></i>
+              <span>ระบบบริหารเงินกำไรสะสม • กองทุนโรงเรียน</span>
+            </div>
+            <h2 class="text-2xl sm:text-3xl font-black tracking-tight text-white flex items-center gap-2">
+              <span>สมุดบัญชีการขายไอศกรีม</span>
+            </h2>
+            <p class="text-xs sm:text-sm text-emerald-100/90 max-w-2xl leading-relaxed">
+              ติดตามกำไรสุทธิจากการจำหน่ายไอศกรีมแบบงวดต่องวด (ขายก่อน-จ่ายค่าไอศกรีมทีหลัง) พร้อมระบบสะสมเข้ากระปุกกองทุน และบันทึกเบิกจ่ายออกใบสำคัญจ่ายอย่างโปร่งใส
+            </p>
+          </div>
+
+          <!-- Quick Action Buttons -->
+          <div class="flex flex-wrap items-center gap-2.5 shrink-0 pt-2 md:pt-0">
+            <button onclick="openWithdrawModal()" class="px-4 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-900 font-extrabold text-xs shadow-lg transition flex items-center space-x-2 cursor-pointer">
+              <i class="fa-solid fa-hand-holding-dollar text-sm"></i>
+              <span>เบิกกำไรไปใช้</span>
+            </button>
+            <button onclick="openProfitReportModal()" class="px-4 py-2.5 rounded-xl bg-white/15 hover:bg-white/25 active:scale-95 text-white font-bold text-xs border border-white/20 backdrop-blur-sm transition flex items-center space-x-2 cursor-pointer">
+              <i class="fa-solid fa-print text-sm"></i>
+              <span>พิมพ์สมุดบัญชี A4</span>
+            </button>
+            <button onclick="exportProfitLedgerToExcel()" class="px-3.5 py-2.5 rounded-xl bg-emerald-800/80 hover:bg-emerald-800 active:scale-95 text-white font-bold text-xs border border-emerald-400/30 transition flex items-center space-x-1.5 cursor-pointer" title="ดาวน์โหลดเป็นไฟล์ Excel (.csv)">
+              <i class="fa-solid fa-file-excel text-sm text-emerald-300"></i>
+              <span>Excel</span>
+            </button>
+            <button id="btn-share-director" onclick="copyDirectorLink()" class="px-3.5 py-2.5 rounded-xl bg-teal-800/80 hover:bg-teal-700 active:scale-95 text-white font-bold text-xs border border-teal-400/30 transition flex items-center space-x-1.5 cursor-pointer" title="คัดลอกลิงก์สำหรับส่งให้ ผอ. ดูเฉพาะประวัติและสมุดบัญชี (แก้ไขไม่ได้)">
+              <i class="fa-solid fa-share-nodes text-sm text-teal-300"></i>
+              <span>แชร์ลิงก์ให้ ผอ.</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Decorative background shapes -->
+        <div class="absolute -right-12 -bottom-12 w-64 h-64 bg-white/5 rounded-full blur-2xl pointer-events-none"></div>
+      </div>
+
+      <!-- 4 Executive Financial Summary Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Card 1: กำไรสะสมคงเหลือพร้อมเบิก (Hero Card) -->
+        <div class="bg-gradient-to-br from-white to-emerald-50/70 rounded-3xl p-5 shadow-sm border-2 border-emerald-300 relative overflow-hidden group hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-emerald-800 uppercase tracking-wider">กำไรสะสมคงเหลือ (พร้อมเบิก)</span>
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-700 flex items-center justify-center text-sm shadow-xs">
+              <i class="fa-solid fa-wallet"></i>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-2xl sm:text-3xl font-black font-mono text-emerald-600 tracking-tight" id="profit-card-available">
+              ฿0
+            </div>
+            <p class="text-[11px] text-emerald-700/80 font-medium">เงินกองทุนที่นำไปใช้กิจกรรมได้จริง</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-emerald-100 flex items-center justify-between text-[11px]">
+            <span class="text-slate-500">สถานะเงิน:</span>
+            <span class="inline-flex items-center gap-1 font-bold text-emerald-700 bg-emerald-100/80 px-2 py-0.5 rounded-full text-[10px]">
+              <i class="fa-solid fa-shield-check"></i> พร้อมใช้งาน
+            </span>
+          </div>
+        </div>
+
+        <!-- Card 2: กำไรสุทธิรวมที่หาได้ทั้งหมด -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden group hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">กำไรสุทธิรวมทั้งหมด</span>
+            <div class="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-sm shadow-xs">
+              <i class="fa-solid fa-chart-line"></i>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-2xl sm:text-3xl font-black font-mono text-blue-600 tracking-tight" id="profit-card-total-earned">
+              ฿0
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium" id="profit-card-closed-lots-count">จากลอตที่ปิดรอบแล้ว 0 งวด</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <span class="text-slate-500">อัตรากำไรเฉลี่ย:</span>
+            <span class="font-bold text-blue-700" id="profit-card-margin">0%</span>
+          </div>
+        </div>
+
+        <!-- Card 3: ยอดกำไรที่เบิกใช้ไปแล้ว -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden group hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">เบิกใช้กำไรไปแล้ว</span>
+            <div class="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-sm shadow-xs">
+              <i class="fa-solid fa-receipt"></i>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-2xl sm:text-3xl font-black font-mono text-amber-600 tracking-tight" id="profit-card-total-withdrawn">
+              ฿0
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium" id="profit-card-withdrawn-count">รวม 0 รายการเบิกจ่าย</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <span class="text-slate-500">มีใบสำคัญจ่าย:</span>
+            <span class="font-bold text-amber-700" id="profit-card-voucher-count">0 ฉบับ</span>
+          </div>
+        </div>
+
+        <!-- Card 4: ทุนค่าไอศกรีมหมุนเวียน (งวดปัจจุบัน - กันไว้จ่ายบริษัท) -->
+        <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200/80 relative overflow-hidden group hover:shadow-md transition">
+          <div class="flex items-center justify-between mb-2">
+            <span class="text-xs font-bold text-slate-500 uppercase tracking-wider">ทุนค่าไอศกรีม (ห้ามแตะต้อง)</span>
+            <div class="w-9 h-9 rounded-xl bg-rose-50 text-rose-600 flex items-center justify-center text-sm shadow-xs">
+              <i class="fa-solid fa-lock"></i>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <div class="text-2xl sm:text-3xl font-black font-mono text-rose-600 tracking-tight" id="profit-card-active-cost">
+              ฿5,000
+            </div>
+            <p class="text-[11px] text-slate-400 font-medium">กันไว้คืนร้านไอศกรีมเมื่อจบลอต</p>
+          </div>
+          <div class="mt-3 pt-2.5 border-t border-slate-100 flex items-center justify-between text-[11px]">
+            <span class="text-slate-500">ชำระบริษัท:</span>
+            <span class="font-bold text-rose-600">เงินเชื่อ (จ่ายทีหลัง)</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Information Banner / Workflow Explainer for Teachers -->
+      <div class="bg-gradient-to-r from-emerald-50 via-teal-50 to-blue-50 border border-emerald-200 rounded-2xl p-4 text-xs text-slate-700 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-xs">
+        <div class="flex items-start space-x-3">
+          <div class="w-8 h-8 rounded-full bg-emerald-600 text-white flex items-center justify-center shrink-0 mt-0.5">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <div class="space-y-0.5">
+            <p class="font-extrabold text-emerald-950">หลักการบัญชีแบบงวดต่องวด (ไม่มีรายวัน • ไม่สับสน)</p>
+            <p class="text-slate-600 text-[11px] leading-relaxed">
+              เมื่อขายไอศกรีมหมดลอตและกดปิดลอต ระบบจะนำ <strong>ยอดเงินสดที่เก็บได้ - ค่าไอศกรีมที่ต้องจ่ายบริษัท = กำไรสุทธิ</strong> แล้วนำกำไรนั้นเข้ากระปุกสะสม คุณครูสามารถเลือกเก็บสะสมไว้ หรือเบิกไปใช้กิจกรรมโรงเรียนเมื่อใดก็ได้ พร้อมพิมพ์ใบสำคัญจ่ายที่มีลายมือชื่ออนุมัติครบถ้วน
+            </p>
+          </div>
+        </div>
+        <div class="shrink-0 flex items-center gap-2">
+          <span class="bg-white px-3 py-1.5 rounded-xl border border-emerald-200 text-emerald-800 font-bold text-[11px] shadow-xs">
+            <i class="fa-solid fa-check-circle text-emerald-500 mr-1"></i>ระบบปิดรอบอัตโนมัติ
+          </span>
+        </div>
+      </div>
+
+      <!-- Section: สมุดบัญชีรายรับ-รายจ่ายเงินกำไร (สมุดเงินสดโครงการ แบบที่ 1) -->
+      <div class="bg-white rounded-3xl p-5 sm:p-6 shadow-sm border border-slate-200/80 space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-3">
+          <div class="flex items-center space-x-2.5">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100 text-emerald-800 flex items-center justify-center font-bold text-base">
+              <i class="fa-solid fa-book-journal-whills"></i>
+            </div>
+            <div>
+              <h3 class="font-black text-sm sm:text-base text-slate-900">สมุดบัญชีรายรับ - รายจ่ายเงินกำไร (สมุดเงินสด)</h3>
+              <p class="text-[11px] text-slate-400">บันทึกยอดขาย คืนต้นทุนบริษัท กำไรสุทธิ และรายการเบิกใช้กำไร พร้อมยอดคงเหลือจริงบรรทัดต่อบรรทัด</p>
+            </div>
+          </div>
+          
+          <div class="flex items-center gap-2 self-start sm:self-center">
+            <span id="profit-master-count-badge" class="bg-slate-100 text-slate-700 px-2.5 py-1 rounded-full font-bold text-[11px]">0 รายการ</span>
+            <button onclick="openWithdrawModal()" class="px-3.5 py-1.5 bg-amber-400 hover:bg-amber-300 active:scale-95 text-slate-900 font-extrabold text-xs rounded-xl shadow-xs transition flex items-center space-x-1.5 cursor-pointer">
+              <i class="fa-solid fa-hand-holding-dollar text-[11px]"></i>
+              <span>เบิกกำไรไปใช้</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="overflow-x-auto rounded-2xl">
+          <table class="w-full text-left border-collapse text-xs" id="profit-master-table">
+            <thead>
+              <tr class="border-b border-slate-200 text-slate-600 font-bold bg-slate-50/90 text-[11px] uppercase tracking-wider">
+                <th class="py-3 px-3 w-28 whitespace-nowrap">วันที่</th>
+                <th class="py-3 px-3 whitespace-nowrap">รายการ / กิจกรรม</th>
+                <th class="py-3 px-2.5 text-right text-blue-700 whitespace-nowrap">ยอดขายรวม (รับ)</th>
+                <th class="py-3 px-2.5 text-right text-rose-700 whitespace-nowrap">จ่ายต้นทุนบริษัท</th>
+                <th class="py-3 px-2.5 text-right bg-emerald-50/80 text-emerald-900 font-black whitespace-nowrap">กำไรสุทธิงวด</th>
+                <th class="py-3 px-2.5 text-right text-amber-700 whitespace-nowrap">เบิกใช้กำไร (จ่าย)</th>
+                <th class="py-3 px-2.5 text-right font-black text-slate-900 bg-slate-50/50 whitespace-nowrap">กำไรสะสมคงเหลือ</th>
+                <th class="py-3 px-3 min-w-[150px]">ผู้รับเงิน / หมายเหตุ</th>
+                <th class="py-3 px-2 text-center whitespace-nowrap w-24">จัดการ</th>
+              </tr>
+            </thead>
+            <tbody id="profit-master-tbody" class="divide-y divide-slate-100 text-slate-700">
+              <!-- Populated by app.js -->
+            </tbody>
+            <tfoot id="profit-master-tfoot" class="border-t-2 border-slate-300 font-bold bg-slate-50/90 text-xs text-slate-800">
+              <!-- Populated by app.js -->
+            </tfoot>
+          </table>
+
+          <!-- Empty State -->
+          <div id="profit-master-empty" class="hidden text-center py-12 space-y-2">
+            <div class="w-12 h-12 bg-slate-100 text-slate-400 rounded-2xl flex items-center justify-center mx-auto text-xl">
+              <i class="fa-solid fa-inbox"></i>
+            </div>
+            <p class="font-bold text-xs text-slate-600">ยังไม่มีรายการในสมุดบัญชีกำไร</p>
+            <p class="text-[11px] text-slate-400">เมื่อคุณครูปิดลอตการขาย หรือบันทึกการเบิกเงินกำไร รายการจะถูกบันทึกและแสดงที่นี่อัตโนมัติ</p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
   </main>
 
   <!-- Mobile Bottom Navigation Bar (Visible only on Mobile screens < md) -->
@@ -830,20 +1171,25 @@
       <i class="fa-solid fa-boxes-stacked text-lg mb-1"></i>
       <span>สินค้า/สั่งซื้อ</span>
     </button>
+
+    <button onclick="switchTab('profit')" id="nav-btn-profit" class="mob-nav-btn flex flex-col items-center text-[11px] font-medium text-slate-400 hover:text-rose-600 transition">
+      <i class="fa-solid fa-wallet text-lg mb-1"></i>
+      <span>สมุดบัญชีกำไร</span>
+    </button>
   </nav>
 
   <!-- ============================================== -->
   <!-- MODAL 1: CONFIRM CLOSE LOT (ปิดลอตการขาย) -->
   <!-- ============================================== -->
   <div id="close-lot-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp max-h-[92vh] overflow-y-auto">
       <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-2xl flex items-center justify-center text-2xl mx-auto">
         <i class="fa-solid fa-lock"></i>
       </div>
 
       <div class="text-center space-y-1">
         <h3 class="font-bold text-lg text-slate-800">ยืนยันการปิดลอตนี้?</h3>
-        <p class="text-xs text-slate-500">ระบบจะสรุปผลรอบปัจจุบัน และเปิดลอตใหม่ (ต้นทุน 5,000 บาท) ให้อัตโนมัติทันที</p>
+        <p class="text-xs text-slate-500">ระบบจะสรุปผลรอบปัจจุบันเข้าสมุดบัญชีกำไร และเปิดลอตใหม่ให้ทันที</p>
       </div>
 
       <!-- Lot Summary in Modal -->
@@ -862,6 +1208,50 @@
         </div>
       </div>
 
+      <!-- New Lot Cost Setting -->
+      <div class="bg-amber-50/70 p-3.5 rounded-2xl border border-amber-200 text-xs space-y-1.5 text-left">
+        <label for="close-lot-next-cost" class="block font-bold text-amber-900">
+          <i class="fa-solid fa-box-open mr-1 text-amber-600"></i> ตั้งต้นทุนตั้งต้นสำหรับ "ลอตใหม่" (บาท)
+        </label>
+        <input type="number" id="close-lot-next-cost" min="0" step="0.01" placeholder="5000" class="w-full px-3 py-2 bg-white border border-amber-300 rounded-xl font-mono font-bold text-slate-800 outline-none focus:ring-2 focus:ring-amber-400">
+        <p class="text-[10px] text-amber-800/80">ระบุยอดตามบิลลอตใหม่ หรือใส่ค่าเริ่มต้นไว้ก่อนแล้วค่อยเลือกตามรายการไอติมทีหลังได้ครับ</p>
+      </div>
+
+      <!-- Optional: Withdraw profit immediately upon lot closure -->
+      <div class="border-t border-slate-200 pt-3 space-y-2 text-left" id="close-lot-withdraw-section">
+        <label class="flex items-center space-x-2 text-xs font-bold text-slate-700 cursor-pointer">
+          <input type="checkbox" id="close-lot-withdraw-chk" onchange="toggleCloseLotWithdrawFields()" class="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer">
+          <span>ต้องการเบิกเงินกำไรงวดนี้ไปใช้ทันที</span>
+        </label>
+        
+        <div id="close-lot-withdraw-fields" class="hidden space-y-2.5 bg-emerald-50/60 p-3.5 rounded-2xl border border-emerald-200 text-xs mt-2">
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">จำนวนเงินที่ต้องการเบิก (บาท)</label>
+            <input type="number" id="close-lot-withdraw-amount" min="1" step="any" placeholder="0" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg font-mono font-bold text-rose-600 outline-none">
+            <span class="text-[10px] text-slate-500">เบิกได้ไม่เกินกำไรสุทธิงวดนี้ (ส่วนที่เหลือจะสะสมเข้ากองทุนอัตโนมัติ)</span>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">หมวดหมู่</label>
+            <select id="close-lot-withdraw-category" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg outline-none text-xs">
+              <option value="กิจกรรมโรงเรียน">กิจกรรมโรงเรียน / กิจกรรมนักเรียน</option>
+              <option value="อุปกรณ์/ของใช้">จัดซื้ออุปกรณ์ / ของใช้ในโรงเรียน</option>
+              <option value="อาหารว่าง/เครื่องดื่ม">อาหารว่าง / เครื่องดื่ม / สวัสดิการ</option>
+              <option value="พัฒนาการศึกษา">สื่อการเรียนการสอน / พัฒนาการศึกษา</option>
+              <option value="ซ่อมบำรุง/สาธารณูปโภค">ซ่อมบำรุง / สาธารณูปโภค</option>
+              <option value="อื่นๆ">อื่นๆ</option>
+            </select>
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">วัตถุประสงค์ / รายการที่จ่าย</label>
+            <input type="text" id="close-lot-withdraw-purpose" placeholder="ระบุเหตุผล เช่น จัดซื้อของรางวัลวันเด็ก" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg outline-none">
+          </div>
+          <div>
+            <label class="block font-semibold text-slate-700 mb-1">ผู้ขอเบิก / ผู้รับเงิน</label>
+            <input type="text" id="close-lot-withdraw-recipient" placeholder="เช่น คุณครูสมศรี ใจดี" class="w-full px-3 py-2 bg-white border border-slate-300 rounded-lg outline-none">
+          </div>
+        </div>
+      </div>
+
       <div class="flex gap-2 pt-2">
         <button onclick="executeCloseLot()" id="btn-confirm-close-action" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md transition">
           ยืนยันปิดลอต & เปิดใหม่
@@ -872,6 +1262,12 @@
       </div>
     </div>
   </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
 
   <!-- ============================================== -->
   <!-- MODAL 2: SUPABASE CONFIGURATION (ตั้งค่าฐานข้อมูล) -->
@@ -915,6 +1311,16 @@
             สลับไปใช้โหมดจัดเก็บในเครื่อง (Offline / Local)
           </button>
           
+          <!-- ส่วนอัปเกรดโครงสร้างตารางคลาวด์ (SQL Schema Migration) -->
+          <div class="border-t border-slate-200 pt-3 mt-1 space-y-2">
+            <p class="text-[11px] text-slate-500 font-bold flex items-center gap-1.5">
+              <i class="fa-solid fa-cloud-arrow-up text-emerald-600"></i> อัปเกรดตารางคลาวด์ (ซิงค์เบิกกำไร & รายการสั่งไอติม)
+            </p>
+            <button type="button" onclick="copySupabaseUpgradeSQL()" class="w-full py-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-800 font-bold rounded-xl transition text-xs flex items-center justify-center gap-1.5 border border-emerald-200 shadow-2xs cursor-pointer">
+              <i class="fa-solid fa-copy"></i> คัดลอกคำสั่ง SQL อัปเกรดฐานข้อมูล (วางใน SQL Editor)
+            </button>
+          </div>
+
           <!-- ส่วนสำรองและกู้คืนข้อมูล (Backup & Restore) -->
           <div class="border-t border-slate-200 pt-3 mt-1 space-y-2">
             <p class="text-[11px] text-slate-500 font-bold flex items-center gap-1.5">
@@ -948,6 +1354,12 @@
       </form>
     </div>
   </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
 
   <!-- ============================================== -->
   <!-- MODAL 3: EDIT INITIAL COST & FLOAT MONEY (แก้ไขต้นทุนและเงินทอนตั้งต้น) -->
@@ -1003,6 +1415,12 @@
   </div>
 
   <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
+
+  <!-- ============================================== -->
   <!-- MODAL 4: EDIT / DELETE DAILY SALE (แก้ไขหรือลบรายการขายที่ผิดพลาด) -->
   <!-- ============================================== -->
   <div id="edit-sale-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
@@ -1029,9 +1447,10 @@
           <label class="block font-semibold text-slate-700 mb-1">ยอดเงินสดที่ขายได้สุทธิ (บาท) *</label>
           <div class="relative">
             <span class="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 font-mono font-bold">฿</span>
-            <input type="number" id="edit-sale-amount" required min="1" step="any" 
+            <input type="number" id="edit-sale-amount" required min="0" step="any" 
                    class="w-full pl-8 pr-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none font-mono text-sm font-bold text-slate-800">
           </div>
+          <p class="text-[10px] text-slate-400 mt-1">ใส่ 0 บาทได้ในกรณีวันงดขาย (โดยระบุสาเหตุในช่องหมายเหตุด้านล่าง)</p>
         </div>
 
         <div>
@@ -1065,6 +1484,12 @@
       </form>
     </div>
   </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
 
   <!-- ============================================== -->
   <!-- MODAL 5: A4 OFFICIAL INCOME-EXPENSE LEDGER REPORT -->
@@ -1180,6 +1605,12 @@
   </div>
 
   <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
+
+  <!-- ============================================== -->
   <!-- MODAL 6: ADD / EDIT PRODUCT (เพิ่ม / แก้ไขรายการสินค้าไอศกรีม) -->
   <!-- ============================================== -->
   <div id="product-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4 overflow-y-auto">
@@ -1284,6 +1715,12 @@
       </form>
     </div>
   </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+
 
   <!-- ============================================== -->
   <!-- MODAL 7: PURCHASE ORDER A4 / PDF EXPORT (ใบสั่งซื้อสินค้าส่งร้านค้า) -->
@@ -1421,6 +1858,638 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+  <!-- ============================================== -->
+  <!-- MODAL: WITHDRAW PROFIT (เบิกเงินกำไรไปใช้) -->
+  <!-- ============================================== -->
+  <div id="withdraw-profit-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 animate-scaleUp max-h-[92vh] overflow-y-auto">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-9 h-9 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-base font-bold">
+            <i class="fa-solid fa-hand-holding-dollar"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm sm:text-base text-slate-800">เบิกเงินกำไร</h3>
+            <p class="text-[11px] text-slate-400">หักจากกระปุกกำไรสะสม พร้อมพิมพ์ใบสำคัญจ่าย</p>
+          </div>
+        </div>
+        <button onclick="closeModal('withdraw-profit-modal')" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Current Available Profit Banner -->
+      <div class="bg-emerald-50 border border-emerald-200 rounded-2xl p-3.5 flex items-center justify-between">
+        <div>
+          <span class="text-[11px] text-emerald-800 font-semibold block">ยอดกำไรสะสมคงเหลือ (เบิกได้สูงสุด):</span>
+          <span class="text-lg font-black font-mono text-emerald-600" id="withdraw-modal-available-text">฿0</span>
+        </div>
+        <span class="text-[10px] bg-emerald-200/60 text-emerald-800 font-bold px-2 py-1 rounded-full">
+          <i class="fa-solid fa-shield-halved mr-1"></i>ปลอดภัย
+        </span>
+      </div>
+
+      <form onsubmit="handleConfirmWithdrawal(event)" class="space-y-3.5 text-xs">
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">วันที่เบิกเงิน</label>
+          <input type="date" id="withdraw-date" required class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-xs">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">จำนวนเงินที่ต้องการเบิก (บาท) *</label>
+          <input type="number" id="withdraw-amount" min="1" step="any" required placeholder="0.00" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none font-mono text-base font-bold text-rose-600" oninput="validateWithdrawAmountInput()">
+          
+          <!-- Quick Amount Presets -->
+          <div class="flex flex-wrap gap-1.5 mt-2">
+            <button type="button" onclick="setWithdrawAmount(500)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-[11px] transition cursor-pointer">฿500</button>
+            <button type="button" onclick="setWithdrawAmount(1000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-[11px] transition cursor-pointer">฿1,000</button>
+            <button type="button" onclick="setWithdrawAmount(2000)" class="px-2.5 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-lg text-[11px] transition cursor-pointer">฿2,000</button>
+            <button type="button" onclick="setWithdrawAmountMax()" class="px-2.5 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 font-bold rounded-lg text-[11px] transition cursor-pointer">เบิกทั้งหมด</button>
+          </div>
+          <p id="withdraw-error-msg" class="text-rose-500 font-bold text-[11px] mt-1 hidden">ยอดเบิกเกินจำนวนกำไรสะสมคงเหลือ!</p>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">หมวดหมู่ค่าใช้จ่าย</label>
+          <select id="withdraw-category" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-xs">
+            <option value="กิจกรรมโรงเรียน">กิจกรรมโรงเรียน / กิจกรรมนักเรียน</option>
+            <option value="อุปกรณ์/ของใช้">จัดซื้ออุปกรณ์ / ของใช้ในโรงเรียน</option>
+            <option value="อาหารว่าง/เครื่องดื่ม">อาหารว่าง / เครื่องดื่ม / สวัสดิการ</option>
+            <option value="พัฒนาการศึกษา">สื่อการเรียนการสอน / พัฒนาการศึกษา</option>
+            <option value="ซ่อมบำรุง/สาธารณูปโภค">ซ่อมบำรุง / สาธารณูปโภค</option>
+            <option value="อื่นๆ">อื่นๆ</option>
+          </select>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">วัตถุประสงค์ / รายการที่จ่าย *</label>
+          <textarea id="withdraw-purpose" rows="2" required placeholder="ระบุรายละเอียด เช่น ซื้อพัดลมตั้งโต๊ะ 1 เครื่อง สำหรับห้องพักครู" class="w-full px-3.5 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-xs"></textarea>
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1">ผู้ขอเบิก / ผู้รับเงิน *</label>
+          <input type="text" id="withdraw-recipient" required placeholder="เช่น ครูสมศรี ใจดี" class="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-amber-500 outline-none text-xs">
+        </div>
+
+        <div class="pt-2 flex flex-col gap-2">
+          <button type="submit" id="btn-submit-withdrawal" class="w-full py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold rounded-xl transition shadow flex items-center justify-center space-x-2 cursor-pointer">
+            <i class="fa-solid fa-check"></i>
+            <span>ยืนยันเบิกเงิน & พิมพ์ใบสำคัญจ่าย</span>
+          </button>
+          <button type="button" onclick="closeModal('withdraw-profit-modal')" class="w-full py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl transition text-xs cursor-pointer">
+            ยกเลิก
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+  <!-- ============================================== -->
+  <!-- MODAL: PAYMENT VOUCHER A4 (ใบสำคัญจ่ายเงินกำไร) -->
+  <!-- ============================================== -->
+  <div id="voucher-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex flex-col items-center justify-start p-2 sm:p-6 overflow-y-auto">
+    
+    <!-- Action Toolbar (Hidden when printing via styles.css) -->
+    <div class="no-print bg-slate-800 text-white w-full max-w-4xl rounded-2xl p-4 mb-4 shadow-xl flex flex-wrap items-center justify-between gap-3 border border-slate-700">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-emerald-500 text-white flex items-center justify-center text-sm font-bold">
+          <i class="fa-solid fa-receipt"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm">ใบสำคัญจ่ายเงินกำไร (Payment Voucher)</h3>
+          <p class="text-[11px] text-slate-400">พร้อมสำหรับสั่งพิมพ์ A4 หรือบันทึกเป็น PDF</p>
+        </div>
+      </div>
+
+      <div class="flex items-center space-x-2">
+        <button onclick="window.print()" class="px-4 py-2 bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-print"></i>
+          <span>พิมพ์ใบสำคัญจ่าย / บันทึก PDF</span>
+        </button>
+        <button onclick="closeModal('voucher-modal')" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold text-xs rounded-xl transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i> ปิด
+        </button>
+      </div>
+    </div>
+
+    <!-- Actual Printable Voucher Sheet (A4 Portrait Style) -->
+    <div id="voucher-sheet" class="bg-white text-slate-900 w-full max-w-4xl rounded-2xl shadow-2xl p-8 sm:p-12 space-y-6 border border-slate-200">
+      
+      <!-- Voucher Header -->
+      <div class="flex justify-between items-start border-b-2 border-emerald-600 pb-4">
+        <div class="space-y-1">
+          <div class="inline-block bg-emerald-700 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider mb-1">
+            SCHOOL PROJECT PAYMENT VOUCHER
+          </div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900">ใบสำคัญจ่ายเงินกำไรโครงการไอศกรีม</h1>
+          <p class="text-xs text-slate-600" id="voucher-school-name">โครงการจำหน่ายไอศกรีมโรงเรียน (Wall's Ice Cream Fund)</p>
+          <p class="text-xs text-slate-500">จ่ายจาก: บัญชีกำไรสะสมกองทุนโครงการไอศกรีม</p>
+        </div>
+
+        <div class="bg-slate-50 border border-slate-300 rounded-xl p-3 text-xs space-y-1 min-w-[200px]">
+          <div class="hidden">
+            <span class="text-slate-500 font-semibold">เลขที่ใบสำคัญจ่าย:</span>
+            <span class="font-mono font-bold text-slate-900" id="voucher-pv-no">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500 font-semibold">วันที่จ่ายเงิน:</span>
+            <span class="font-semibold text-slate-800" id="voucher-date">-</span>
+          </div>
+          <div class="flex justify-between">
+            <span class="text-slate-500 font-semibold">หมวดหมู่:</span>
+            <span class="font-semibold text-emerald-800" id="voucher-category-label">-</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Recipient Info Box -->
+      <div class="bg-slate-50/70 border border-slate-200 rounded-xl p-4 text-xs grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div>
+          <span class="text-slate-500 block mb-0.5 font-semibold">จ่ายให้แก่ (ผู้รับเงิน / ผู้ขอเบิก):</span>
+          <span class="font-bold text-slate-900 text-sm" id="voucher-recipient-name">-</span>
+        </div>
+        <div>
+          <span class="text-slate-500 block mb-0.5 font-semibold">วัตถุประสงค์ในการเบิกจ่าย:</span>
+          <span class="font-medium text-slate-800" id="voucher-purpose-text">-</span>
+        </div>
+      </div>
+
+      <!-- Voucher Items Table -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-extrabold text-slate-800">รายการเบิกจ่ายเงิน</h4>
+        <table class="w-full border-collapse border border-slate-400 text-xs">
+          <thead>
+            <tr class="bg-slate-100 text-slate-700 font-bold border-b border-slate-400">
+              <th class="border border-slate-400 py-2.5 px-3 text-center w-12">ลำดับ</th>
+              <th class="border border-slate-400 py-2.5 px-4 text-left">รายการ / วัตถุประสงค์การใช้จ่ายเงินกำไร</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-center w-28">หมวดหมู่</th>
+              <th class="border border-slate-400 py-2.5 px-4 text-right w-36">จำนวนเงิน (บาท)</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="border border-slate-400 py-4 px-3 text-center font-mono">1</td>
+              <td class="border border-slate-400 py-4 px-4">
+                <p class="font-bold text-slate-900" id="voucher-table-purpose">-</p>
+                <p class="text-[11px] text-slate-500 mt-1">เบิกจ่ายตามมติโครงการจำหน่ายไอศกรีมโรงเรียน</p>
+              </td>
+              <td class="border border-slate-400 py-4 px-3 text-center text-slate-600" id="voucher-table-category">-</td>
+              <td class="border border-slate-400 py-4 px-4 text-right font-mono font-bold text-slate-900 text-sm" id="voucher-table-amount">0.00</td>
+            </tr>
+          </tbody>
+          <tfoot>
+            <tr class="bg-slate-50 font-bold border-t border-slate-400">
+              <td colspan="2" class="border border-slate-400 py-3 px-4 text-left">
+                <span class="text-slate-500 font-normal mr-2">จำนวนเงินเป็นตัวอักษร:</span>
+                <span class="text-slate-900 font-extrabold" id="voucher-baht-text">( - )</span>
+              </td>
+              <td class="border border-slate-400 py-3 px-3 text-center text-slate-600">รวมจ่ายสุทธิ</td>
+              <td class="border border-slate-400 py-3 px-4 text-right font-mono text-base font-black text-rose-700" id="voucher-total-amount">฿0.00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Financial Balance Note -->
+      <div class="bg-emerald-50/50 border border-emerald-200 rounded-xl p-3 text-xs flex justify-between text-slate-700">
+        <div>
+          <span class="text-slate-500">ยอดกำไรสะสมคงเหลือก่อนเบิก:</span>
+          <span class="font-mono font-bold text-slate-800 ml-1" id="voucher-bal-before">-</span>
+        </div>
+        <div>
+          <span class="text-slate-500">ยอดกำไรสะสมคงเหลือหลังเบิก:</span>
+          <span class="font-mono font-bold text-emerald-700 ml-1" id="voucher-bal-after">-</span>
+        </div>
+      </div>
+
+      <!-- Signature Section (3-column School Committee / Transparent Standard) -->
+      <div class="grid grid-cols-3 gap-6 pt-8 text-xs text-center text-slate-700 border-t border-slate-200">
+        <div class="space-y-5">
+          <p class="font-semibold text-slate-600">ผู้ขอเบิกเงิน / ผู้รับเงิน</p>
+          <div class="pt-6 border-b border-dotted border-slate-400 mx-4"></div>
+          <p>( <span id="voucher-sign-recipient">...................................................</span> )</p>
+          <p>วันที่ ......... / ......... / ............</p>
+        </div>
+
+        <div class="space-y-5">
+          <p class="font-semibold text-slate-600">ผู้จ่ายเงิน / ผู้ดูแลบัญชีโครงการ</p>
+          <div class="pt-6 border-b border-dotted border-slate-400 mx-4"></div>
+          <p>( ................................................... )</p>
+          <p>วันที่ ......... / ......... / ............</p>
+        </div>
+
+        <div class="space-y-5">
+          <p class="font-semibold text-slate-600">ผู้อนุมัติการจ่ายเงิน</p>
+          <div class="pt-6 border-b border-dotted border-slate-400 mx-4"></div>
+          <p>( <span id="voucher-sign-approver">ผู้อำนวยการโรงเรียน</span> )</p>
+          <p>วันที่ ......... / ......... / ............</p>
+        </div>
+      </div>
+
+      <!-- Footnote -->
+      <div class="text-[10px] text-slate-400 text-center pt-2">
+        เอกสารนี้พิมพ์จากระบบบันทึกบัญชีโครงการจำหน่ายไอศกรีมโรงเรียน (Wall's POS & Store System)
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+  <!-- ============================================== -->
+  <!-- MODAL: PROFIT LEDGER A4 REPORT (รายงานสมุดบัญชีกำไร A4) -->
+  <!-- ============================================== -->
+  <div id="profit-report-modal" class="fixed inset-0 z-50 bg-slate-900/80 backdrop-blur-md hidden flex flex-col items-center justify-start p-2 sm:p-6 overflow-y-auto">
+    
+    <!-- Action Toolbar (Hidden when printing via styles.css) -->
+    <div class="no-print bg-slate-800 text-white w-full max-w-4xl rounded-2xl p-4 mb-4 shadow-xl flex flex-wrap items-center justify-between gap-3 border border-slate-700">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-lg bg-teal-500 text-white flex items-center justify-center text-sm font-bold">
+          <i class="fa-solid fa-file-invoice-dollar"></i>
+        </div>
+        <div>
+          <h3 class="font-bold text-sm">รายงานสมุดบัญชีกำไร A4</h3>
+          <p class="text-[11px] text-slate-400">สำหรับเสนอผู้บริหาร หรือเก็บเป็นหลักฐานทางการเงิน</p>
+        </div>
+      </div>
+
+      <div class="flex items-center flex-wrap gap-2.5">
+        <div class="flex items-center gap-3 bg-slate-900/80 px-3 py-1.5 rounded-xl border border-slate-700 text-xs text-slate-200">
+          <span class="text-slate-400 font-semibold text-[11px] hidden sm:inline"><i class="fa-solid fa-eye mr-1"></i>แสดง/ซ่อน:</span>
+          <label class="flex items-center space-x-1.5 cursor-pointer hover:text-white select-none">
+            <input type="checkbox" id="toggle-rpt-statement" checked onchange="toggleReportSection('statement', this.checked)" class="rounded text-teal-500 focus:ring-teal-400 accent-teal-500 cursor-pointer">
+            <span>กล่องสรุปงบบัญชี</span>
+          </label>
+          <label class="flex items-center space-x-1.5 cursor-pointer hover:text-white select-none border-l border-slate-700 pl-3">
+            <input type="checkbox" id="toggle-rpt-signatures" checked onchange="toggleReportSection('signatures', this.checked)" class="rounded text-teal-500 focus:ring-teal-400 accent-teal-500 cursor-pointer">
+            <span>ส่วนลงนามผู้บริหาร</span>
+          </label>
+        </div>
+
+        <button onclick="window.print()" class="px-4 py-2 bg-teal-500 hover:bg-teal-600 active:scale-95 text-white font-bold text-xs rounded-xl shadow-md transition flex items-center space-x-1.5 cursor-pointer">
+          <i class="fa-solid fa-print"></i>
+          <span>พิมพ์รายงาน A4</span>
+        </button>
+        <button onclick="closeModal('profit-report-modal')" class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-300 font-semibold text-xs rounded-xl transition cursor-pointer">
+          <i class="fa-solid fa-xmark"></i> ปิด
+        </button>
+      </div>
+    </div>
+
+    <!-- Actual Printable Report Sheet (A4 Portrait Style) -->
+    <div id="profit-report-sheet" class="bg-white text-slate-900 w-full max-w-4xl rounded-2xl shadow-2xl p-8 sm:p-12 space-y-6 border border-slate-200">
+      
+      <!-- Report Header -->
+      <div class="border-b-2 border-teal-700 pb-4 flex justify-between items-start">
+        <div class="space-y-1">
+          <div class="inline-block bg-teal-800 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded uppercase tracking-wider mb-1">
+            OFFICIAL FINANCIAL REPORT
+          </div>
+          <h1 class="text-xl sm:text-2xl font-black text-slate-900">รายงานสมุดบัญชีกำไร</h1>
+          <p class="text-xs text-slate-600">โครงการจำหน่ายไอศกรีมโรงเรียน (ระบบ Wall's POS)</p>
+        </div>
+        <div class="text-right text-xs text-slate-500 space-y-1">
+          <p>วันที่พิมพ์รายงาน: <span class="font-bold text-slate-800" id="profit-rpt-print-date">-</span></p>
+          <p>สถานะ: <span class="font-bold text-emerald-700">ตรวจสอบแล้ว</span></p>
+        </div>
+      </div>
+
+      <!-- Financial Executive Overview 4-Strip -->
+      <div class="grid grid-cols-4 gap-3 text-center border border-slate-300 rounded-xl p-3 bg-slate-50">
+        <div class="space-y-0.5">
+          <span class="text-[10px] text-slate-500 font-bold block">กำไรสุทธิสะสมทั้งหมด</span>
+          <span class="text-sm sm:text-base font-black font-mono text-blue-700" id="profit-rpt-total-earned">฿0</span>
+        </div>
+        <div class="space-y-0.5 border-l border-slate-300">
+          <span class="text-[10px] text-slate-500 font-bold block">เบิกใช้กำไรไปแล้ว</span>
+          <span class="text-sm sm:text-base font-black font-mono text-amber-700" id="profit-rpt-total-withdrawn">฿0</span>
+        </div>
+        <div class="space-y-0.5 border-l border-slate-300">
+          <span class="text-[10px] text-slate-500 font-bold block">กำไรสะสมคงเหลือจริง</span>
+          <span class="text-sm sm:text-base font-black font-mono text-emerald-700" id="profit-rpt-balance">฿0</span>
+        </div>
+        <div class="space-y-0.5 border-l border-slate-300">
+          <span class="text-[10px] text-slate-500 font-bold block">จำนวนงวดที่ปิดรอบ</span>
+          <span class="text-sm sm:text-base font-black font-mono text-slate-800" id="profit-rpt-lots-count">0 งวด</span>
+        </div>
+      </div>
+
+      <!-- Master Cash Book Table (ตารางสมุดเงินสดรายรับ-รายจ่ายเงินกำไร แบบที่ 1) -->
+      <div class="space-y-2">
+        <h4 class="text-xs font-black text-slate-800 flex items-center justify-between">
+          <span>ตารางสมุดบัญชีรายรับ - รายจ่ายเงินกำไร (สมุดเงินสดโครงการ)</span>
+        </h4>
+        <table class="w-full border-collapse border border-slate-400 text-xs">
+          <thead>
+            <tr class="bg-slate-100 text-slate-800 font-bold border-b border-slate-400 text-[11px]">
+              <th class="border border-slate-400 py-2.5 px-2 text-center w-24 whitespace-nowrap">วันที่</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-left">รายการ / งวดที่</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-right whitespace-nowrap">ยอดขายรวม</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-right text-slate-600 whitespace-nowrap">จ่ายทุนบริษัท</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-right text-emerald-800 font-bold whitespace-nowrap">กำไรสุทธิงวด</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-right text-rose-700 font-bold whitespace-nowrap">เบิกกำไร (จ่าย)</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-right font-black whitespace-nowrap">กำไรคงเหลือ</th>
+              <th class="border border-slate-400 py-2.5 px-3 text-left">ผู้รับเงิน / หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody id="profit-rpt-master-tbody">
+            <!-- Populated by app.js -->
+          </tbody>
+          <tfoot id="profit-rpt-master-tfoot" class="border-t-2 border-slate-400 font-bold bg-slate-50 text-xs text-slate-900">
+            <!-- Populated by app.js -->
+          </tfoot>
+        </table>
+      </div>
+
+      <!-- Financial Statement Summary Box -->
+      <div id="profit-rpt-statement-box" class="border border-slate-400 rounded-xl overflow-hidden text-xs bg-slate-50/60 space-y-0 transition">
+        <div class="bg-slate-200/80 font-black px-4 py-2 border-b border-slate-300 text-slate-900 flex justify-between">
+          <span>สรุปงบบัญชีเงินกำไร (Statement of Profit & Expense)</span>
+          <span class="text-[11px] text-slate-500 font-medium">สถานะสุทธิยกไป</span>
+        </div>
+        <div class="p-3 space-y-1.5 text-slate-700">
+          <div class="flex justify-between items-center py-0.5 border-b border-slate-200">
+            <span>(+) รายรับรวม (กำไรสุทธิจากการจำหน่ายไอศกรีม):</span>
+            <span class="font-mono font-bold text-blue-700 text-sm whitespace-nowrap tabular-nums" id="profit-rpt-sum-income">฿0.00</span>
+          </div>
+          <div class="flex justify-between items-center py-0.5 border-b border-slate-200">
+            <span>(-) รายจ่ายรวม (เบิกใช้เงินกำไร):</span>
+            <span class="font-mono font-bold text-rose-700 text-sm whitespace-nowrap tabular-nums" id="profit-rpt-sum-expense">฿0.00</span>
+          </div>
+          <div class="flex justify-between items-center pt-2 font-black text-slate-900 text-sm bg-emerald-50/80 -mx-3 -mb-3 px-3 py-2.5 border-t-2 border-emerald-600">
+            <div>
+              <span class="block">(=) ยอดเงินกำไรคงเหลือสุทธิ:</span>
+              <span class="text-[11px] text-slate-500 font-normal" id="profit-rpt-sum-baht-text">( - )</span>
+            </div>
+            <span class="font-mono text-base font-black text-emerald-700 whitespace-nowrap tabular-nums" id="profit-rpt-sum-balance">฿0.00</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Signature Section -->
+      <div id="profit-rpt-signature-section" class="grid grid-cols-2 gap-10 pt-8 text-xs text-center text-slate-700 border-t border-slate-200 transition">
+        <div class="space-y-5">
+          <p class="font-semibold text-slate-600">ลงชื่อ ........................................................... ผู้จัดทำรายงาน</p>
+          <p>( ........................................................... )</p>
+          <p>ผู้รับผิดชอบโครงการจำหน่ายไอศกรีม</p>
+        </div>
+        <div class="space-y-5">
+          <p class="font-semibold text-slate-600">ลงชื่อ ........................................................... ผู้รับรองรายงาน</p>
+          <p>( ........................................................... )</p>
+          <p>ผู้อำนวยการโรงเรียน</p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- MODAL: EDIT REMARK (แก้ไขหมายเหตุ / บันทึกช่วยจำ) -->
+  
+
+  <!-- ============================================== -->
+  <div id="edit-remark-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 animate-scaleUp">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-8 h-8 rounded-lg bg-blue-100 text-blue-600 flex items-center justify-center text-sm font-bold">
+            <i class="fa-solid fa-pen-to-square"></i>
+          </div>
+          <div>
+            <h3 class="font-bold text-sm text-slate-800" id="edit-remark-title">แก้ไขหมายเหตุ</h3>
+            <p class="text-[11px] text-slate-400" id="edit-remark-subtitle">บันทึกข้อมูลช่วยจำ</p>
+          </div>
+        </div>
+        <button onclick="closeModal('edit-remark-modal')" class="text-slate-400 hover:text-slate-600 p-1 cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <form onsubmit="handleSaveRemark(event)" class="space-y-3 text-xs">
+        <input type="hidden" id="edit-remark-type">
+        <input type="hidden" id="edit-remark-id">
+        
+        <div id="edit-remark-recipient-group" class="hidden">
+          <label class="block font-semibold text-slate-700 mb-1">ชื่อผู้รับเงิน / หน่วยงาน</label>
+          <input type="text" id="edit-remark-recipient" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-xs" placeholder="เช่น ครูกุลธรา, ฝ่ายกิจกรรม">
+        </div>
+
+        <div>
+          <label class="block font-semibold text-slate-700 mb-1" id="edit-remark-input-label">ข้อความหมายเหตุ / บันทึกช่วยจำ</label>
+          <textarea id="edit-remark-input" rows="3" class="w-full px-3 py-2 bg-slate-50 border border-slate-200 rounded-xl focus:ring-2 focus:ring-blue-500 outline-none text-xs leading-relaxed" placeholder="กรอกหมายเหตุ เช่น เลขที่บิลบริษัท, รายละเอียดการชำระ หรือบันทึกช่วยจำ..."></textarea>
+        </div>
+
+        <div class="flex gap-2 pt-1">
+          <button type="submit" class="flex-1 py-2.5 bg-blue-600 hover:bg-blue-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md transition cursor-pointer">
+            บันทึก
+          </button>
+          <button type="button" onclick="closeModal('edit-remark-modal')" class="py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold rounded-xl text-xs transition cursor-pointer">
+            ยกเลิก
+          </button>
+        </div>
+
+        <div id="edit-remark-delete-btn-container" class="pt-2 border-t border-slate-100 text-center hidden">
+          <button type="button" onclick="handleDeleteFromEditModal()" class="text-rose-600 hover:text-rose-700 hover:underline text-xs font-bold inline-flex items-center gap-1 cursor-pointer">
+            <i class="fa-solid fa-trash-can text-[11px]"></i>
+            <span>ลบ / ยกเลิกรายการเบิกนี้ (คืนเงินเข้ากระปุกกำไร)</span>
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Floating Row Actions Dropdown Menu (Idea 1) -->
+  <div id="profit-row-actions-dropdown" class="fixed z-50 hidden bg-white rounded-2xl shadow-2xl border border-slate-200/90 py-1.5 w-52 text-xs divide-y divide-slate-100 transition-all duration-150">
+    <div class="px-3.5 py-1.5 text-[10px] font-bold text-slate-400 uppercase tracking-wider flex items-center justify-between" id="profit-dropdown-title">
+      <span>จัดการรายการ</span>
+      <i class="fa-solid fa-sliders text-[10px]"></i>
+    </div>
+    <div class="py-1" id="profit-dropdown-items">
+      <!-- Injected via JavaScript -->
+    </div>
+  </div>
+
+  <!-- Beautiful Custom Confirmation Dialog Modal -->
+  <div id="custom-confirm-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 animate-scaleUp text-center border border-slate-100">
+      <div id="confirm-modal-icon-container" class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto shadow-inner">
+        <i id="confirm-modal-icon" class="fa-solid fa-trash-can"></i>
+      </div>
+      
+      <div class="space-y-1.5">
+        <h3 class="font-black text-base text-slate-900" id="confirm-modal-title">ยืนยันการทำรายการ?</h3>
+        <p class="text-xs text-slate-500 leading-relaxed" id="confirm-modal-message">รายละเอียดข้อความแจ้งเตือน</p>
+      </div>
+
+      <div class="flex gap-2 pt-2">
+        <button type="button" id="confirm-modal-btn-cancel" class="flex-1 py-2.5 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+          ยกเลิก
+        </button>
+        <button type="button" id="confirm-modal-btn-confirm" class="flex-1 py-2.5 px-4 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md transition cursor-pointer">
+          ยืนยัน
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Active Lot Ice Cream Order & Profit Forecast Modal -->
+  <div id="active-lot-order-modal" class="fixed inset-0 z-50 bg-slate-900/70 backdrop-blur-sm hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-3xl max-w-2xl w-full max-h-[92vh] flex flex-col shadow-2xl animate-scaleUp overflow-hidden">
+      <!-- Modal Header -->
+      <div class="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-gradient-to-r from-rose-50/80 via-white to-amber-50/80 shrink-0">
+        <div class="flex items-center space-x-3">
+          <div class="w-10 h-10 rounded-2xl bg-rose-600 text-white flex items-center justify-center text-lg font-bold shadow-sm">
+            <i class="fa-solid fa-boxes-packing"></i>
+          </div>
+          <div>
+            <div class="flex items-center gap-2">
+              <h3 class="font-black text-sm sm:text-base text-slate-800" id="lot-order-modal-title">บันทึกรายการสั่งซื้อไอศกรีม (ลอตปัจจุบัน)</h3>
+              <span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-rose-100 text-rose-700" id="lot-order-modal-lot-badge">ลอตที่ 2</span>
+            </div>
+            <p class="text-[11px] text-slate-500 mt-0.5">ระบุรายการสินค้าที่สั่ง ระบบจะคำนวณต้นทุน ยอดขาย และกำไรที่จะได้ให้อัตโนมัติ</p>
+          </div>
+        </div>
+        <button onclick="closeModal('active-lot-order-modal')" class="text-slate-400 hover:text-slate-600 p-1.5 rounded-xl hover:bg-slate-100 transition cursor-pointer">
+          <i class="fa-solid fa-xmark text-lg"></i>
+        </button>
+      </div>
+
+      <!-- Mode Switcher Tabs -->
+      <div class="px-4 sm:px-5 pt-3 pb-2 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between gap-2 flex-wrap shrink-0">
+        <div class="inline-flex p-1 bg-slate-200/70 rounded-xl text-xs font-bold">
+          <button type="button" id="tab-btn-order-catalog" onclick="switchLotOrderMode('catalog')" class="px-3 py-1.5 rounded-lg transition bg-white text-rose-700 shadow-2xs cursor-pointer">
+            <i class="fa-solid fa-list-check mr-1"></i>เลือกตามบิลวอลล์ (อัตโนมัติ)
+          </button>
+          <button type="button" id="tab-btn-order-quick" onclick="switchLotOrderMode('quick')" class="px-3 py-1.5 rounded-lg transition text-slate-600 hover:text-slate-900 cursor-pointer">
+            <i class="fa-solid fa-bolt mr-1"></i>กรอกยอดรวมด่วน (ระบุเอง)
+          </button>
+        </div>
+
+        <button type="button" onclick="importFromPurchaseOrderDraft()" class="px-3 py-1.5 bg-white hover:bg-rose-50 text-slate-700 hover:text-rose-700 border border-slate-200 rounded-xl text-[11px] font-bold transition flex items-center gap-1 cursor-pointer shadow-2xs">
+          <i class="fa-solid fa-rotate text-rose-500"></i>
+          <span>ดึงจากแผนสั่งซื้อล่าสุด</span>
+        </button>
+      </div>
+
+      <!-- Modal Body (Scrollable) -->
+      <div class="p-4 sm:p-5 overflow-y-auto space-y-4 flex-1 text-xs">
+        
+        <!-- MODE 1: Catalog Selection Mode -->
+        <div id="lot-order-catalog-mode" class="space-y-3">
+          <!-- Search & Filter Controls -->
+          <div class="flex items-center gap-2">
+            <div class="relative flex-1">
+              <i class="fa-solid fa-magnifying-glass absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" id="lot-order-search" oninput="renderLotOrderProductList()" placeholder="ค้นหารายการไอศกรีม เช่น คอร์นเนตโต, แม็กนั่ม, แพดเดิลป๊อป..." class="w-full pl-8 pr-3 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none focus:ring-2 focus:ring-rose-500">
+            </div>
+            <select id="lot-order-cat-filter" onchange="renderLotOrderProductList()" class="px-2.5 py-2 bg-slate-50 border border-slate-200 rounded-xl text-xs outline-none font-semibold text-slate-700">
+              <option value="all">ทุกหมวดหมู่</option>
+              <option value="คอร์นเนตโต">คอร์นเนตโต</option>
+              <option value="แม็กนั่ม">แม็กนั่ม</option>
+              <option value="แพดเดิลป๊อป">แพดเดิลป๊อป</option>
+              <option value="ถ้วย">ถ้วย</option>
+              <option value="แซนด์วิช">แซนด์วิช</option>
+            </select>
+          </div>
+
+          <!-- Product Items List -->
+          <div id="lot-order-product-list" class="divide-y divide-slate-100 max-h-[46vh] overflow-y-auto pr-1 space-y-1">
+            <!-- Injected via JavaScript -->
+          </div>
+        </div>
+
+        <!-- MODE 2: Quick Summary Entry Mode -->
+        <div id="lot-order-quick-mode" class="hidden space-y-4 py-2">
+          <div class="bg-amber-50 p-4 rounded-2xl border border-amber-200 text-amber-900 space-y-1">
+            <p class="font-bold flex items-center gap-1.5 text-xs">
+              <i class="fa-solid fa-lightbulb text-amber-600"></i>
+              <span>โหมดกรอกยอดรวมด่วน</span>
+            </p>
+            <p class="text-[11px] text-amber-800 leading-relaxed">
+              เหมาะสำหรับวันที่คุณครูมีใบส่งของ/บิลรวม และต้องการระบุยอดต้นทุนรวมกับยอดขายที่คาดว่าจะขายได้ทั้งหมด โดยไม่ต้องเลือกทีละรายการ
+            </p>
+          </div>
+
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 text-xs">ยอดต้นทุนที่จ่ายบริษัท (บาท) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">฿</span>
+                <input type="number" step="0.01" min="0" id="lot-order-quick-cost" oninput="updateLotOrderQuickPreview()" placeholder="เช่น 5031.05" class="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono font-bold text-sm text-rose-600 outline-none focus:ring-2 focus:ring-rose-500">
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">ยอดเงินสดที่ต้องจ่ายค่าไอศกรีมให้ตัวแทนวอลล์</p>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 text-xs">ยอดขายคาดการณ์เมื่อขายหมด (บาท) <span class="text-rose-500">*</span></label>
+              <div class="relative">
+                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 font-bold">฿</span>
+                <input type="number" step="0.01" min="0" id="lot-order-quick-revenue" oninput="updateLotOrderQuickPreview()" placeholder="เช่น 5850.00" class="w-full pl-8 pr-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono font-bold text-sm text-blue-600 outline-none focus:ring-2 focus:ring-blue-500">
+              </div>
+              <p class="text-[10px] text-slate-400 mt-1">ยอดรวมของราคาขายปลีกไอศกรีมทุกแท่งในตู้</p>
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 text-xs">จำนวนแท่งไอศกรีมโดยประมาณ (แท่ง)</label>
+              <input type="number" min="0" id="lot-order-quick-pieces" oninput="updateLotOrderQuickPreview()" placeholder="เช่น 240" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs text-slate-800 outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+
+            <div>
+              <label class="block font-bold text-slate-700 mb-1 text-xs">จำนวนลัง/กล่อง (กล่อง)</label>
+              <input type="number" min="0" id="lot-order-quick-boxes" oninput="updateLotOrderQuickPreview()" placeholder="เช่น 10" class="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl font-mono text-xs text-slate-800 outline-none focus:ring-2 focus:ring-slate-400">
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Modal Footer Sticky Calculation Summary -->
+      <div class="p-4 sm:p-5 border-t border-slate-200 bg-slate-50 shrink-0 space-y-3">
+        <!-- Live Totals Bar -->
+        <div class="flex items-center justify-between flex-wrap gap-2 text-xs">
+          <div class="flex items-center space-x-3 text-slate-600">
+            <span class="bg-white px-2.5 py-1 rounded-lg border border-slate-200 font-bold shadow-2xs">
+              รวม: <strong class="text-slate-900" id="lot-order-sum-boxes">0</strong> ลัง (<span id="lot-order-sum-pieces">0</span> ชิ้น)
+            </span>
+            <span class="font-medium text-slate-500">
+              ต้นทุน: <strong class="text-rose-600 font-mono font-bold" id="lot-order-sum-cost">฿0.00</strong>
+            </span>
+          </div>
+
+          <div class="flex items-center space-x-3">
+            <span class="text-slate-600 font-medium">
+              ยอดขาย: <strong class="text-blue-700 font-mono font-bold" id="lot-order-sum-revenue">฿0.00</strong>
+            </span>
+            <span class="bg-emerald-100 text-emerald-800 px-3 py-1 rounded-xl font-black font-mono text-sm border border-emerald-300 flex items-center gap-1 shadow-xs">
+              <span class="text-[10px] font-bold">กำไร:</span>
+              <span id="lot-order-sum-profit">+฿0.00</span>
+            </span>
+          </div>
+        </div>
+
+        <div class="flex gap-2.5 pt-1">
+          <button type="button" onclick="handleSaveActiveLotOrder()" class="flex-1 py-3 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold rounded-xl text-xs shadow-md transition flex items-center justify-center gap-1.5 cursor-pointer">
+            <i class="fa-solid fa-floppy-disk"></i>
+            <span>บันทึกเป็นรายการสั่งซื้อของลอตนี้</span>
+          </button>
+          <button type="button" onclick="closeModal('active-lot-order-modal')" class="py-3 px-5 bg-slate-200 hover:bg-slate-300 text-slate-700 font-bold rounded-xl text-xs transition cursor-pointer">
+            ยกเลิก
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 

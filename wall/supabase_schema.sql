@@ -1,5 +1,5 @@
 -- =====================================================
--- Database Schema for Ice Cream Batch Tracker
+-- Database Schema for Ice Cream Batch Tracker (v2.1)
 -- Run this script in the Supabase SQL Editor
 -- =====================================================
 
@@ -13,6 +13,8 @@ create table if not exists public.lots (
     float_money numeric not null default 500,
     total_collected numeric not null default 0,
     status text not null default 'active' check (status in ('active', 'closed')),
+    order_data jsonb default null,
+    lot_note text default '',
     created_at timestamp with time zone default timezone('utc'::text, now()) not null,
     closed_at timestamp with time zone null
 );
@@ -30,6 +32,10 @@ create table if not exists public.daily_sales (
 
 -- Migration helper (in case tables were already created earlier)
 alter table public.lots add column if not exists float_money numeric not null default 500;
+alter table public.lots add column if not exists invoice_url text;
+alter table public.lots add column if not exists invoice_data text;
+alter table public.lots add column if not exists order_data jsonb default null;
+alter table public.lots add column if not exists lot_note text default '';
 alter table public.daily_sales add column if not exists shift text not null default 'lunch';
 alter table public.daily_sales add column if not exists note text default '';
 alter table public.daily_sales add column if not exists float_deducted numeric default 0;
@@ -44,13 +50,14 @@ alter table public.lots enable row level security;
 alter table public.daily_sales enable row level security;
 
 -- 5. Open access policy for teacher's client app (using anon key)
--- Can be restricted later with Supabase Auth if needed
+drop policy if exists "Allow all operations for anon on lots" on public.lots;
 create policy "Allow all operations for anon on lots" 
 on public.lots for all 
 to anon 
 using (true) 
 with check (true);
 
+drop policy if exists "Allow all operations for anon on daily_sales" on public.daily_sales;
 create policy "Allow all operations for anon on daily_sales" 
 on public.daily_sales for all 
 to anon 
@@ -80,3 +87,25 @@ alter table public.products enable row level security;
 drop policy if exists "Allow all operations for anon on products" on public.products;
 create policy "Allow all operations for anon on products"
 on public.products for all to anon using (true) with check (true);
+
+-- 8. Create table 'withdrawals' (สมุดบัญชีเบิกเงินกำไรกองทุน & ใบสำคัญจ่าย)
+create table if not exists public.withdrawals (
+    id uuid primary key default gen_random_uuid(),
+    pv_number text not null default '',
+    date text not null,
+    amount numeric not null check (amount > 0),
+    category text not null default 'กิจกรรมโรงเรียน',
+    purpose text not null default '',
+    recipient text not null default '',
+    approver text not null default 'ผู้อำนวยการโรงเรียน',
+    lot_id uuid null references public.lots(id) on delete set null,
+    created_at timestamp with time zone default timezone('utc'::text, now()) not null
+);
+
+create index if not exists idx_withdrawals_created_at on public.withdrawals(created_at desc);
+
+alter table public.withdrawals enable row level security;
+
+drop policy if exists "Allow all operations for anon on withdrawals" on public.withdrawals;
+create policy "Allow all operations for anon on withdrawals"
+on public.withdrawals for all to anon using (true) with check (true);
