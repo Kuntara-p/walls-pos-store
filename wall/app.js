@@ -1237,17 +1237,26 @@ function getLotOrderData(lotId) {
   }
 }
 
+const SHOW_FORECAST_TO_DIRECTOR_KEY = 'batch_tracker_show_forecast_to_director';
+
 function saveLotOrderData(lotId, orderData) {
   if (!lotId) return null;
   try {
+    const all = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_LOT_ORDERS) || '{}');
+    const prev = all[lotId] || {};
+    const preservedShow = typeof orderData.showToDirector === 'boolean'
+      ? orderData.showToDirector
+      : (typeof prev.showToDirector === 'boolean'
+        ? prev.showToDirector
+        : localStorage.getItem(SHOW_FORECAST_TO_DIRECTOR_KEY) === 'true');
     const cleanPayload = {
       ...orderData,
+      showToDirector: preservedShow,
       totalCost: roundMoney(orderData.totalCost || 0),
       totalRevenue: roundMoney(orderData.totalRevenue || 0),
       totalProfit: roundMoney((orderData.totalRevenue || 0) - (orderData.totalCost || 0)),
       updatedAt: new Date().toISOString()
     };
-    const all = JSON.parse(localStorage.getItem(STORAGE_KEYS.LOCAL_LOT_ORDERS) || '{}');
     all[lotId] = cleanPayload;
     localStorage.setItem(STORAGE_KEYS.LOCAL_LOT_ORDERS, JSON.stringify(all));
     if (activeLot && activeLot.id === lotId) {
@@ -1260,6 +1269,44 @@ function saveLotOrderData(lotId, orderData) {
   }
 }
 
+function isForecastVisibleToDirector() {
+  const orderData = activeLot ? getLotOrderData(activeLot.id) : null;
+  if (orderData && typeof orderData.showToDirector === 'boolean') {
+    return orderData.showToDirector;
+  }
+  return localStorage.getItem(SHOW_FORECAST_TO_DIRECTOR_KEY) === 'true';
+}
+
+async function toggleForecastDirectorVisibility() {
+  if (typeof isDirectorViewMode === 'function' && isDirectorViewMode()) return;
+
+  const nextState = !isForecastVisibleToDirector();
+  localStorage.setItem(SHOW_FORECAST_TO_DIRECTOR_KEY, nextState ? 'true' : 'false');
+
+  if (activeLot) {
+    const existingOrder = getLotOrderData(activeLot.id);
+    const updatedOrder = saveLotOrderData(activeLot.id, {
+      ...(existingOrder || {}),
+      showToDirector: nextState
+    });
+    const currentCost = parseLotCost(activeLot.cost, 5000);
+    const floatAmt = activeLot.float_money !== undefined ? roundMoney(activeLot.float_money) : 500;
+    await updateLotCostAndFloatDB(
+      activeLot.id,
+      currentCost,
+      floatAmt,
+      updatedOrder ? { order_data: updatedOrder } : null
+    );
+  }
+
+  renderActiveLotForecastCard();
+  if (nextState) {
+    showToast('👁️ เปิดให้ ผอ. เห็นการ์ดพยากรณ์กำไรลอตนี้แล้ว', 'info');
+  } else {
+    showToast('🙈 ซ่อนการ์ดพยากรณ์กำไรจากลิงก์ ผอ. เรียบร้อยแล้ว', 'success');
+  }
+}
+
 function renderActiveLotForecastCard() {
   const card = document.getElementById('hist-active-forecast-card');
   if (!card) return;
@@ -1268,12 +1315,31 @@ function renderActiveLotForecastCard() {
     card.classList.add('hidden');
     return;
   }
-  card.classList.remove('hidden');
 
   const isReadOnly = typeof isDirectorViewMode === 'function' && isDirectorViewMode();
+  const showToDir = isForecastVisibleToDirector();
+
+  if (isReadOnly && !showToDir) {
+    card.classList.add('hidden');
+    return;
+  }
+
+  card.classList.remove('hidden');
+
   const btnContainer = document.getElementById('hist-forecast-btn-container');
   if (btnContainer) {
     btnContainer.classList.toggle('hidden', isReadOnly);
+  }
+
+  const toggleDirBtn = document.getElementById('btn-toggle-forecast-director');
+  if (toggleDirBtn && !isReadOnly) {
+    if (showToDir) {
+      toggleDirBtn.className = 'px-3 py-2 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer border border-emerald-300';
+      toggleDirBtn.innerHTML = '<i class="fa-solid fa-eye"></i><span>ผอ. มองเห็นการ์ดนี้</span>';
+    } else {
+      toggleDirBtn.className = 'px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-amber-300 font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-slate-700';
+      toggleDirBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i><span>ซ่อนจาก ผอ. อยู่</span>';
+    }
   }
 
   const lotNum = (closedLots.length + 1);
@@ -1733,7 +1799,7 @@ async function loadHistoryData() {
   listContainer.innerHTML = '<div class="col-span-full text-center py-10 text-xs text-slate-400"><i class="fa-solid fa-spinner fa-spin text-xl mb-2"></i><br>กำลังโหลดประวัติลอต...</div>';
 
   closedLots = await fetchClosedLotsWithDetails();
-  if (!activeLot) activeLot = await fetchActiveLot();
+  activeLot = await fetchActiveLot();
 
   // Render Active Lot Forecast Card (พยากรณ์กำไรลอตปัจจุบัน)
   renderActiveLotForecastCard();

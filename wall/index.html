@@ -557,7 +557,11 @@
             </div>
           </div>
 
-          <div class="flex items-center gap-2 shrink-0" id="hist-forecast-btn-container">
+          <div class="flex flex-wrap items-center gap-2 shrink-0" id="hist-forecast-btn-container">
+            <button type="button" id="btn-toggle-forecast-director" onclick="toggleForecastDirectorVisibility()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-amber-300 font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-slate-700" title="สลับการแสดงผลการ์ดพยากรณ์กำไรลอตนี้ในลิงก์ของ ผอ.">
+              <i class="fa-solid fa-eye-slash"></i>
+              <span>ซ่อนจาก ผอ. อยู่</span>
+            </button>
             <button type="button" onclick="openActiveLotOrderModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-boxes-packing text-sm"></i>
               <span id="hist-forecast-btn-text">ใส่รายการไอติมที่สั่งในลอตนี้</span>
