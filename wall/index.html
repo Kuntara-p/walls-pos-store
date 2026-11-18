@@ -533,7 +533,7 @@
           <i class="fa-solid fa-ice-cream"></i>
         </div>
 
-        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10 border-b border-amber-200/60 pb-3">
+        <div id="hist-forecast-header" class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 relative z-10 border-b border-amber-200/60 pb-3">
           <div class="flex items-center space-x-3">
             <div class="w-10 h-10 rounded-2xl bg-gradient-to-tr from-amber-500 to-rose-500 text-white flex items-center justify-center font-bold text-lg shadow-sm">
               <i class="fa-solid fa-chart-line-up"></i>
@@ -558,9 +558,9 @@
           </div>
 
           <div class="flex flex-wrap items-center gap-2 shrink-0" id="hist-forecast-btn-container">
-            <button type="button" id="btn-toggle-forecast-director" onclick="toggleForecastDirectorVisibility()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-amber-300 font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-slate-700" title="สลับการแสดงผลการ์ดพยากรณ์กำไรลอตนี้ในลิงก์ของ ผอ.">
+            <button type="button" id="btn-toggle-forecast-director" onclick="toggleForecastDirectorVisibility()" class="px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer" title="สลับซ่อนหรือแสดงรายละเอียดการ์ดนี้">
               <i class="fa-solid fa-eye-slash"></i>
-              <span>ซ่อนจาก ผอ. อยู่</span>
+              <span>ซ่อน</span>
             </button>
             <button type="button" onclick="openActiveLotOrderModal()" class="px-4 py-2 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer">
               <i class="fa-solid fa-boxes-packing text-sm"></i>
@@ -569,6 +569,7 @@
           </div>
         </div>
 
+        <div id="hist-forecast-body" class="space-y-4">
         <!-- 4 Metric Cards Grid -->
         <div class="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 relative z-10">
           <!-- Metric 1: Cost (จ่ายบริษัท) -->
@@ -648,6 +649,7 @@
           <div class="flex items-center justify-between pt-1 text-[11px] text-slate-500 flex-wrap gap-2" id="hist-forecast-items-summary">
             <!-- Injected by JavaScript: e.g. "สั่งไอศกรีม 10 ลัง (240 แท่ง): คอร์นเนตโต 3, แม็กนั่ม 2, แพดเดิลป๊อป 5" -->
           </div>
+        </div>
         </div>
       </div>
 
@@ -2655,6 +2657,6 @@
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col space-y-2 pointer-events-none w-11/12 max-w-md"></div>
 
   <!-- Application Logic -->
-  <script src="app.js"></script>
+  <script src="app.js?v=2.3"></script>
 </body>
 </html>

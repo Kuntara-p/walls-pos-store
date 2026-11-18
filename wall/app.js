@@ -1238,6 +1238,7 @@ function getLotOrderData(lotId) {
 }
 
 const SHOW_FORECAST_TO_DIRECTOR_KEY = 'batch_tracker_show_forecast_to_director';
+const FORECAST_COLLAPSED_KEY = 'batch_tracker_forecast_collapsed';
 
 function saveLotOrderData(lotId, orderData) {
   if (!lotId) return null;
@@ -1269,7 +1270,12 @@ function saveLotOrderData(lotId, orderData) {
   }
 }
 
+function isForecastCardCollapsed() {
+  return localStorage.getItem(FORECAST_COLLAPSED_KEY) === 'true';
+}
+
 function isForecastVisibleToDirector() {
+  if (isForecastCardCollapsed()) return false;
   const orderData = activeLot ? getLotOrderData(activeLot.id) : null;
   if (orderData && typeof orderData.showToDirector === 'boolean') {
     return orderData.showToDirector;
@@ -1277,33 +1283,64 @@ function isForecastVisibleToDirector() {
   return localStorage.getItem(SHOW_FORECAST_TO_DIRECTOR_KEY) === 'true';
 }
 
+function applyForecastCollapsedUI(isCollapsed) {
+  const bodyEl = document.getElementById('hist-forecast-body');
+  const headerEl = document.getElementById('hist-forecast-header');
+  const toggleBtn = document.getElementById('btn-toggle-forecast-director');
+
+  if (bodyEl) bodyEl.classList.toggle('hidden', isCollapsed);
+  if (headerEl) {
+    if (isCollapsed) {
+      headerEl.classList.remove('border-b', 'border-amber-200/60', 'pb-3');
+    } else {
+      headerEl.classList.add('border-b', 'border-amber-200/60', 'pb-3');
+    }
+  }
+  if (toggleBtn) {
+    if (isCollapsed) {
+      toggleBtn.className = 'px-3 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer';
+      toggleBtn.innerHTML = '<i class="fa-solid fa-eye"></i><span>แสดง</span>';
+    } else {
+      toggleBtn.className = 'px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer';
+      toggleBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i><span>ซ่อน</span>';
+    }
+  }
+}
+
 async function toggleForecastDirectorVisibility() {
   if (typeof isDirectorViewMode === 'function' && isDirectorViewMode()) return;
 
-  const nextState = !isForecastVisibleToDirector();
-  localStorage.setItem(SHOW_FORECAST_TO_DIRECTOR_KEY, nextState ? 'true' : 'false');
+  const nextCollapsed = !isForecastCardCollapsed();
+  const nextShowToDirector = !nextCollapsed;
 
-  if (activeLot) {
-    const existingOrder = getLotOrderData(activeLot.id);
-    const updatedOrder = saveLotOrderData(activeLot.id, {
-      ...(existingOrder || {}),
-      showToDirector: nextState
-    });
-    const currentCost = parseLotCost(activeLot.cost, 5000);
-    const floatAmt = activeLot.float_money !== undefined ? roundMoney(activeLot.float_money) : 500;
-    await updateLotCostAndFloatDB(
-      activeLot.id,
-      currentCost,
-      floatAmt,
-      updatedOrder ? { order_data: updatedOrder } : null
-    );
+  localStorage.setItem(FORECAST_COLLAPSED_KEY, nextCollapsed ? 'true' : 'false');
+  localStorage.setItem(SHOW_FORECAST_TO_DIRECTOR_KEY, nextShowToDirector ? 'true' : 'false');
+
+  // Update DOM immediately before any async DB sync
+  applyForecastCollapsedUI(nextCollapsed);
+
+  if (nextCollapsed) {
+    showToast('🙈 ซ่อนรายละเอียดการ์ดพยากรณ์กำไรแล้ว', 'success');
+  } else {
+    showToast('👁️ แสดงรายละเอียดการ์ดพยากรณ์กำไรแล้ว', 'info');
   }
 
-  renderActiveLotForecastCard();
-  if (nextState) {
-    showToast('👁️ เปิดให้ ผอ. เห็นการ์ดพยากรณ์กำไรลอตนี้แล้ว', 'info');
-  } else {
-    showToast('🙈 ซ่อนการ์ดพยากรณ์กำไรจากลิงก์ ผอ. เรียบร้อยแล้ว', 'success');
+  if (activeLot) {
+    try {
+      const existingOrder = getLotOrderData(activeLot.id);
+      const updatedOrder = saveLotOrderData(activeLot.id, {
+        ...(existingOrder || {}),
+        showToDirector: nextShowToDirector
+      });
+      const currentCost = parseLotCost(activeLot.cost, 5000);
+      const floatAmt = activeLot.float_money !== undefined ? roundMoney(activeLot.float_money) : 500;
+      await updateLotCostAndFloatDB(
+        activeLot.id,
+        currentCost,
+        floatAmt,
+        updatedOrder ? { order_data: updatedOrder } : null
+      );
+    } catch (e) {}
   }
 }
 
@@ -1331,15 +1368,10 @@ function renderActiveLotForecastCard() {
     btnContainer.classList.toggle('hidden', isReadOnly);
   }
 
-  const toggleDirBtn = document.getElementById('btn-toggle-forecast-director');
-  if (toggleDirBtn && !isReadOnly) {
-    if (showToDir) {
-      toggleDirBtn.className = 'px-3 py-2 bg-emerald-50 hover:bg-emerald-100 active:scale-95 text-emerald-800 font-bold text-xs rounded-xl shadow-xs transition flex items-center gap-1.5 cursor-pointer border border-emerald-300';
-      toggleDirBtn.innerHTML = '<i class="fa-solid fa-eye"></i><span>ผอ. มองเห็นการ์ดนี้</span>';
-    } else {
-      toggleDirBtn.className = 'px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-amber-300 font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-slate-700';
-      toggleDirBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i><span>ซ่อนจาก ผอ. อยู่</span>';
-    }
+  if (!isReadOnly) {
+    applyForecastCollapsedUI(isForecastCardCollapsed());
+  } else {
+    applyForecastCollapsedUI(false);
   }
 
   const lotNum = (closedLots.length + 1);
