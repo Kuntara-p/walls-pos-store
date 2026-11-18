@@ -1822,12 +1822,14 @@ async function loadHistoryData() {
     lotNumMap[l.id] = i + 1;
   });
 
+  const isReadOnly = typeof isDirectorViewMode === 'function' && isDirectorViewMode();
+
   listContainer.innerHTML = closedLots.map((lot) => {
     const lotNumber = lotNumMap[lot.id] || '-';
-    const cost = parseFloat(lot.cost) || 5000;
-    const collected = parseFloat(lot.total_collected) || 0;
-    const profit = collected - cost;
-    totalLifetimeProfit += profit;
+    const cost = parseLotCost(lot.cost, 5000);
+    const collected = roundMoney(lot.total_collected || 0);
+    const profit = roundMoney(collected - cost);
+    totalLifetimeProfit = roundMoney(totalLifetimeProfit + profit);
 
     const startObj = new Date(lot.created_at);
     const endObj = lot.closed_at ? new Date(lot.closed_at) : new Date();
@@ -1839,6 +1841,23 @@ async function loadHistoryData() {
       : '-';
 
     const isProfitable = profit >= 0;
+
+    const costBoxHtml = isReadOnly
+      ? `
+            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+              <span class="text-[10px] text-slate-400 block">รายจ่าย</span>
+              <span class="font-bold text-xs sm:text-sm text-rose-600 font-mono">฿${cost.toLocaleString('th-TH')}</span>
+            </div>
+        `
+      : `
+            <button type="button" onclick="openEditClosedLotCostModal('${lot.id}', ${lotNumber})" class="group relative bg-slate-50 hover:bg-rose-50/70 p-2.5 rounded-xl border border-slate-100 hover:border-rose-200 transition text-center w-full cursor-pointer" title="คลิกเพื่อแก้ไขต้นทุนของลอตนี้">
+              <span class="opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 transition-opacity duration-150 pointer-events-none absolute -top-2 right-1.5 inline-flex items-center gap-0.5 text-[9px] font-bold text-rose-600 bg-white border border-rose-200 px-1.5 py-0.5 rounded-full shadow-xs">
+                <i class="fa-solid fa-pen text-[8px]"></i> แก้ไข
+              </span>
+              <span class="text-[10px] text-slate-400 group-hover:text-rose-500 block transition">รายจ่าย</span>
+              <span class="font-bold text-xs sm:text-sm text-rose-600 font-mono">฿${cost.toLocaleString('th-TH')}</span>
+            </button>
+        `;
 
     return `
       <div class="bg-white rounded-3xl p-5 shadow-sm border border-slate-200 hover:border-slate-300 hover:shadow-md transition space-y-3 flex flex-col justify-between">
@@ -1858,10 +1877,7 @@ async function loadHistoryData() {
               <span class="text-[10px] text-slate-400 block">รายรับ</span>
               <span class="font-bold text-xs sm:text-sm text-blue-600 font-mono">฿${collected.toLocaleString('th-TH')}</span>
             </div>
-            <div class="bg-slate-50 p-2.5 rounded-xl border border-slate-100">
-              <span class="text-[10px] text-slate-400 block">รายจ่าย</span>
-              <span class="font-bold text-xs sm:text-sm text-rose-600 font-mono">฿${cost.toLocaleString('th-TH')}</span>
-            </div>
+            ${costBoxHtml}
             <div class="p-2.5 rounded-xl border ${isProfitable ? 'bg-emerald-50 text-emerald-800 border-emerald-100' : 'bg-rose-50 text-rose-800 border-rose-100'}">
               <span class="text-[10px] block opacity-80">กำไรสุทธิ</span>
               <span class="font-black text-xs sm:text-sm font-mono">
@@ -1937,6 +1953,121 @@ async function handleSaveCostAndFloat(e) {
   await loadActiveLotData();
   renderActiveLotForecastCard();
   updateInputField();
+}
+
+async function openEditClosedLotCostModal(lotId, lotNumber = null) {
+  if (typeof isDirectorViewMode === 'function' && isDirectorViewMode()) return;
+
+  let lot = (closedLots || []).find(l => l.id === lotId);
+  if (!lot) {
+    closedLots = await fetchClosedLotsWithDetails();
+    lot = (closedLots || []).find(l => l.id === lotId);
+  }
+  if (!lot) {
+    showToast('ไม่พบข้อมูลลอตที่ต้องการแก้ไข', 'error');
+    return;
+  }
+
+  let displayNum = lotNumber;
+  if (!displayNum) {
+    const chronological = [...(closedLots || [])].sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+    const idx = chronological.findIndex(l => l.id === lotId);
+    displayNum = idx !== -1 ? idx + 1 : '-';
+  }
+
+  const startObj = new Date(lot.created_at);
+  const endObj = lot.closed_at ? new Date(lot.closed_at) : new Date();
+  const startDate = startObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short' });
+  const endDate = lot.closed_at
+    ? endObj.toLocaleDateString('th-TH', { day: 'numeric', month: 'short', year: '2-digit' })
+    : '-';
+
+  const collected = roundMoney(lot.total_collected || 0);
+  const currentCost = parseLotCost(lot.cost, 5000);
+
+  document.getElementById('edit-closed-lot-id').value = lot.id;
+  document.getElementById('edit-closed-lot-title').innerText = `ลอตที่ ${displayNum} (${startDate} - ${endDate})`;
+
+  const collectedEl = document.getElementById('edit-closed-lot-collected');
+  collectedEl.dataset.collected = collected;
+  collectedEl.innerText = `฿${collected.toLocaleString('th-TH', { minimumFractionDigits: 0, maximumFractionDigits: 2 })}`;
+
+  const costInput = document.getElementById('edit-closed-lot-cost-input');
+  costInput.value = currentCost;
+
+  const noteInput = document.getElementById('edit-closed-lot-note-input');
+  if (noteInput) noteInput.value = getLotNote(lot.id) || '';
+
+  updateEditClosedLotProfitPreview();
+  document.getElementById('edit-closed-lot-cost-modal').classList.remove('hidden');
+
+  setTimeout(() => {
+    costInput.focus();
+    costInput.select();
+  }, 80);
+}
+
+function updateEditClosedLotProfitPreview() {
+  const collectedEl = document.getElementById('edit-closed-lot-collected');
+  const costInput = document.getElementById('edit-closed-lot-cost-input');
+  const previewEl = document.getElementById('edit-closed-lot-profit-preview');
+  if (!collectedEl || !costInput || !previewEl) return;
+
+  const collected = roundMoney(collectedEl.dataset.collected || 0);
+  const typedCost = roundMoney(costInput.value || 0);
+  const newProfit = roundMoney(collected - typedCost);
+
+  previewEl.innerText = `${newProfit >= 0 ? '+' : '-'}฿${Math.abs(newProfit).toLocaleString('th-TH', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
+  previewEl.className = `font-mono font-black text-sm ${newProfit >= 0 ? 'text-emerald-700' : 'text-rose-600'}`;
+}
+
+async function handleSaveClosedLotCost(event) {
+  event.preventDefault();
+  if (typeof isDirectorViewMode === 'function' && isDirectorViewMode()) return;
+
+  const lotId = document.getElementById('edit-closed-lot-id').value;
+  const newCost = roundMoney(document.getElementById('edit-closed-lot-cost-input').value);
+  const noteVal = document.getElementById('edit-closed-lot-note-input')?.value.trim() || '';
+
+  if (isNaN(newCost) || newCost <= 0) {
+    showToast('กรุณาระบุต้นทุนที่มากกว่า 0 บาท', 'error');
+    return;
+  }
+
+  const lot = (closedLots || []).find(l => l.id === lotId);
+  const floatAmt = lot && lot.float_money !== undefined ? roundMoney(lot.float_money) : 500;
+
+  // Keep saved lot order cost in sync if one exists for this lot
+  const existingOrder = getLotOrderData(lotId);
+  let updatedOrderPayload = null;
+  if (existingOrder) {
+    updatedOrderPayload = saveLotOrderData(lotId, {
+      ...existingOrder,
+      totalCost: newCost,
+      totalProfit: roundMoney((existingOrder.totalRevenue || 0) - newCost)
+    });
+  }
+
+  const extraFields = { lot_note: noteVal };
+  if (updatedOrderPayload) extraFields.order_data = updatedOrderPayload;
+
+  const ok = await updateLotCostAndFloatDB(lotId, newCost, floatAmt, extraFields);
+  await saveLotNote(lotId, noteVal);
+
+  if (lot) {
+    lot.cost = newCost;
+    lot.lot_note = noteVal;
+  }
+
+  closeModal('edit-closed-lot-cost-modal');
+  if (ok) {
+    showToast('บันทึกแก้ไขต้นทุนลอตเรียบร้อยแล้ว คำนวณกำไรทุกหน้าให้ตรงกันแล้วครับ', 'success');
+  } else {
+    showToast('บันทึกในเครื่องแล้ว (รอซิงค์เมื่อออนไลน์)', 'warning');
+  }
+
+  await loadHistoryData();
+  await loadProfitLedgerData();
 }
 
 function openEditSaleModal(saleId) {
@@ -4855,7 +4986,7 @@ async function performSilentDataSync() {
 
     // If any modal is open in Admin mode, avoid interrupting user input
     const isModalOpen = document.querySelector(
-      '.modal:not(.hidden), #close-lot-modal:not(.hidden), #withdraw-profit-modal:not(.hidden), #edit-remark-modal:not(.hidden), #active-lot-order-modal:not(.hidden), #edit-cost-modal:not(.hidden), #edit-sale-modal:not(.hidden), #config-modal:not(.hidden), #product-modal:not(.hidden), #director-visit-history-modal:not(.hidden)'
+      '.modal:not(.hidden), #close-lot-modal:not(.hidden), #withdraw-profit-modal:not(.hidden), #edit-remark-modal:not(.hidden), #active-lot-order-modal:not(.hidden), #edit-cost-modal:not(.hidden), #edit-closed-lot-cost-modal:not(.hidden), #edit-sale-modal:not(.hidden), #config-modal:not(.hidden), #product-modal:not(.hidden), #director-visit-history-modal:not(.hidden)'
     );
     if (isModalOpen && !isDirectorViewMode()) return;
 
@@ -5052,7 +5183,11 @@ function openProfitRowActions(event, type, id, param1, param2) {
     const escapedNote = escapeAttr(param1 || '');
     if (itemsContainer) {
       itemsContainer.innerHTML = `
-        <button type="button" onclick="openEditRemarkModal('lot', '${id}', '${escapedNote}'); closeProfitRowActions();" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-700 font-semibold flex items-center gap-2.5 transition cursor-pointer">
+        <button type="button" onclick="openEditClosedLotCostModal('${id}'); closeProfitRowActions();" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-rose-50 hover:text-rose-700 font-semibold flex items-center gap-2.5 transition cursor-pointer">
+          <i class="fa-solid fa-file-invoice-dollar text-rose-500 w-4"></i>
+          <span>แก้ไขต้นทุนงวดนี้</span>
+        </button>
+        <button type="button" onclick="openEditRemarkModal('lot', '${id}', '${escapedNote}'); closeProfitRowActions();" class="w-full text-left px-3.5 py-2 text-slate-700 hover:bg-blue-50 hover:text-blue-700 font-semibold flex items-center gap-2.5 transition cursor-pointer border-t border-slate-100">
           <i class="fa-solid fa-pen text-blue-500 w-4"></i>
           <span>แก้ไขบันทึกช่วยจำ</span>
         </button>
@@ -5092,7 +5227,7 @@ function openProfitRowActions(event, type, id, param1, param2) {
   let top = rect.bottom + 6;
 
   // If overflowing below screen, flip upwards
-  const dropdownHeight = type === 'lot' ? 70 : 140;
+  const dropdownHeight = type === 'lot' ? 105 : 140;
   if (top + dropdownHeight > window.innerHeight) {
     top = Math.max(10, rect.top - dropdownHeight - 6);
   }
