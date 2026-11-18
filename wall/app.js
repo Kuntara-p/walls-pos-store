@@ -1238,7 +1238,7 @@ function getLotOrderData(lotId) {
 }
 
 const SHOW_FORECAST_TO_DIRECTOR_KEY = 'batch_tracker_show_forecast_to_director';
-const FORECAST_COLLAPSED_KEY = 'batch_tracker_forecast_collapsed';
+try { localStorage.removeItem('batch_tracker_forecast_collapsed'); } catch (e) {}
 
 function saveLotOrderData(lotId, orderData) {
   if (!lotId) return null;
@@ -1270,12 +1270,7 @@ function saveLotOrderData(lotId, orderData) {
   }
 }
 
-function isForecastCardCollapsed() {
-  return localStorage.getItem(FORECAST_COLLAPSED_KEY) === 'true';
-}
-
 function isForecastVisibleToDirector() {
-  if (isForecastCardCollapsed()) return false;
   const orderData = activeLot ? getLotOrderData(activeLot.id) : null;
   if (orderData && typeof orderData.showToDirector === 'boolean') {
     return orderData.showToDirector;
@@ -1283,55 +1278,53 @@ function isForecastVisibleToDirector() {
   return localStorage.getItem(SHOW_FORECAST_TO_DIRECTOR_KEY) === 'true';
 }
 
-function applyForecastCollapsedUI(isCollapsed) {
-  const bodyEl = document.getElementById('hist-forecast-body');
-  const headerEl = document.getElementById('hist-forecast-header');
+function applyForecastDirectorToggleButtonUI(showToDir) {
   const toggleBtn = document.getElementById('btn-toggle-forecast-director');
+  if (!toggleBtn) return;
 
-  if (bodyEl) bodyEl.classList.toggle('hidden', isCollapsed);
-  if (headerEl) {
-    if (isCollapsed) {
-      headerEl.classList.remove('border-b', 'border-amber-200/60', 'pb-3');
-    } else {
-      headerEl.classList.add('border-b', 'border-amber-200/60', 'pb-3');
-    }
-  }
-  if (toggleBtn) {
-    if (isCollapsed) {
-      toggleBtn.className = 'px-3 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer';
-      toggleBtn.innerHTML = '<i class="fa-solid fa-eye"></i><span>แสดง</span>';
-    } else {
-      toggleBtn.className = 'px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer';
-      toggleBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i><span>ซ่อน</span>';
-    }
+  if (showToDir) {
+    toggleBtn.className = 'px-3 py-2 bg-emerald-600 hover:bg-emerald-700 active:scale-95 text-white font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-emerald-500';
+    toggleBtn.innerHTML = '<i class="fa-solid fa-eye"></i><span>แสดง</span>';
+    toggleBtn.title = 'สถานะ: ผอ. เห็นการ์ดนี้ (คลิกเพื่อซ่อนจาก ผอ.)';
+  } else {
+    toggleBtn.className = 'px-3 py-2 bg-slate-800 hover:bg-slate-900 active:scale-95 text-amber-300 font-bold text-xs rounded-xl shadow-sm transition flex items-center gap-1.5 cursor-pointer border border-slate-700';
+    toggleBtn.innerHTML = '<i class="fa-solid fa-eye-slash"></i><span>ซ่อน</span>';
+    toggleBtn.title = 'สถานะ: ซ่อนจาก ผอ. อยู่ (คลิกเพื่อเปิดให้ ผอ. เห็น)';
   }
 }
 
 async function toggleForecastDirectorVisibility() {
   if (typeof isDirectorViewMode === 'function' && isDirectorViewMode()) return;
 
-  const nextCollapsed = !isForecastCardCollapsed();
-  const nextShowToDirector = !nextCollapsed;
+  const nextState = !isForecastVisibleToDirector();
+  localStorage.setItem(SHOW_FORECAST_TO_DIRECTOR_KEY, nextState ? 'true' : 'false');
 
-  localStorage.setItem(FORECAST_COLLAPSED_KEY, nextCollapsed ? 'true' : 'false');
-  localStorage.setItem(SHOW_FORECAST_TO_DIRECTOR_KEY, nextShowToDirector ? 'true' : 'false');
+  if (activeLot) {
+    const existingOrder = getLotOrderData(activeLot.id);
+    saveLotOrderData(activeLot.id, {
+      ...(existingOrder || {}),
+      showToDirector: nextState
+    });
+  }
 
-  // Update DOM immediately before any async DB sync
-  applyForecastCollapsedUI(nextCollapsed);
+  // Update button synchronously (teacher's card always stays open & visible)
+  applyForecastDirectorToggleButtonUI(nextState);
 
-  if (nextCollapsed) {
-    showToast('🙈 ซ่อนรายละเอียดการ์ดพยากรณ์กำไรแล้ว', 'success');
+  try {
+    if (typeof DIRECTOR_PRESENCE_CHANNEL !== 'undefined' && DIRECTOR_PRESENCE_CHANNEL) {
+      DIRECTOR_PRESENCE_CHANNEL.postMessage({ type: 'forecast_visibility', showToDirector: nextState });
+    }
+  } catch (e) {}
+
+  if (nextState) {
+    showToast('👁️ เปิดให้หน้าจอ ผอ. เห็นการ์ดนี้แล้ว', 'info');
   } else {
-    showToast('👁️ แสดงรายละเอียดการ์ดพยากรณ์กำไรแล้ว', 'info');
+    showToast('🙈 ซ่อนการ์ดนี้จากหน้าจอ ผอ. แล้ว (หน้าจอคุณครูแสดงตามปกติ)', 'success');
   }
 
   if (activeLot) {
     try {
-      const existingOrder = getLotOrderData(activeLot.id);
-      const updatedOrder = saveLotOrderData(activeLot.id, {
-        ...(existingOrder || {}),
-        showToDirector: nextShowToDirector
-      });
+      const updatedOrder = getLotOrderData(activeLot.id);
       const currentCost = parseLotCost(activeLot.cost, 5000);
       const floatAmt = activeLot.float_money !== undefined ? roundMoney(activeLot.float_money) : 500;
       await updateLotCostAndFloatDB(
@@ -1363,15 +1356,19 @@ function renderActiveLotForecastCard() {
 
   card.classList.remove('hidden');
 
+  // Ensure teacher's forecast card body & header are never collapsed/hidden
+  const bodyEl = document.getElementById('hist-forecast-body');
+  if (bodyEl) bodyEl.classList.remove('hidden');
+  const headerEl = document.getElementById('hist-forecast-header');
+  if (headerEl) headerEl.classList.add('border-b', 'border-amber-200/60', 'pb-3');
+
   const btnContainer = document.getElementById('hist-forecast-btn-container');
   if (btnContainer) {
     btnContainer.classList.toggle('hidden', isReadOnly);
   }
 
   if (!isReadOnly) {
-    applyForecastCollapsedUI(isForecastCardCollapsed());
-  } else {
-    applyForecastCollapsedUI(false);
+    applyForecastDirectorToggleButtonUI(showToDir);
   }
 
   const lotNum = (closedLots.length + 1);
@@ -5040,6 +5037,24 @@ function initAutoRefreshSystem() {
         performSilentDataSync();
       }
     });
+    window.addEventListener('storage', (e) => {
+      if (e.key === SHOW_FORECAST_TO_DIRECTOR_KEY || e.key === STORAGE_KEYS.LOCAL_LOT_ORDERS) {
+        if (activeLot && activeLot.order_data) {
+          activeLot.order_data = getLotOrderData(activeLot.id) || activeLot.order_data;
+        }
+        renderActiveLotForecastCard();
+      }
+    });
+    if (DIRECTOR_PRESENCE_CHANNEL) {
+      DIRECTOR_PRESENCE_CHANNEL.onmessage = (ev) => {
+        if (ev && ev.data && ev.data.type === 'forecast_visibility') {
+          if (activeLot && activeLot.order_data && typeof ev.data.showToDirector === 'boolean') {
+            activeLot.order_data.showToDirector = ev.data.showToDirector;
+          }
+          renderActiveLotForecastCard();
+        }
+      };
+    }
   } else {
     // Instant wakeup on teacher's screen when Director opens/closes tab
     window.addEventListener('storage', (e) => {
