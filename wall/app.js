@@ -2832,6 +2832,11 @@ function copySupabaseUpgradeSQL() {
 function closeModal(modalId) {
   const modal = document.getElementById(modalId);
   if (modal) modal.classList.add('hidden');
+  if (modalId === 'director-visit-history-modal') {
+    if (typeof cancelClearDirectorVisitHistory === 'function') {
+      cancelClearDirectorVisitHistory();
+    }
+  }
 }
 
 async function handleSaveConfig(e) {
@@ -4860,6 +4865,7 @@ async function renderDirectorVisitStatusBadge() {
 
 async function openDirectorVisitHistoryModal() {
   if (isDirectorViewMode()) return;
+  cancelClearDirectorVisitHistory();
   const modal = document.getElementById('director-visit-history-modal');
   if (modal) modal.classList.remove('hidden');
   await refreshDirectorVisitModal();
@@ -4963,17 +4969,28 @@ async function refreshDirectorVisitModal() {
   }
 }
 
-async function clearDirectorVisitHistory() {
+function askClearDirectorVisitHistory() {
   if (isDirectorViewMode()) return;
-  const confirmed = await showConfirmDialog({
-    title: 'ยืนยันล้างประวัติการเข้าชมของ ผอ.?',
-    message: 'ประวัติการเปิดดูลิงก์ผู้บริหารทั้งหมดจะถูกล้างและเริ่มนับ 0 ใหม่',
-    confirmText: 'ล้างประวัติ',
-    cancelText: 'ยกเลิก',
-    type: 'danger',
-    icon: 'fa-trash-can'
-  });
-  if (!confirmed) return;
+  const normalEl = document.getElementById('dir-visit-footer-normal');
+  const confirmEl = document.getElementById('dir-visit-footer-confirm');
+  if (normalEl && confirmEl) {
+    normalEl.classList.add('hidden');
+    confirmEl.classList.remove('hidden');
+  }
+}
+
+function cancelClearDirectorVisitHistory() {
+  const normalEl = document.getElementById('dir-visit-footer-normal');
+  const confirmEl = document.getElementById('dir-visit-footer-confirm');
+  if (normalEl && confirmEl) {
+    confirmEl.classList.add('hidden');
+    normalEl.classList.remove('hidden');
+  }
+}
+
+async function executeClearDirectorVisitHistory() {
+  if (isDirectorViewMode()) return;
+  cancelClearDirectorVisitHistory();
 
   localStorage.removeItem(STORAGE_KEYS.LOCAL_DIRECTOR_VISITS);
   if (!isOfflineMode && supabaseClient) {
@@ -4984,6 +5001,10 @@ async function clearDirectorVisitHistory() {
 
   await refreshDirectorVisitModal();
   showToast('ล้างประวัติการเข้าชมลิงก์ผู้บริหารเรียบร้อยแล้ว', 'info');
+}
+
+function clearDirectorVisitHistory() {
+  askClearDirectorVisitHistory();
 }
 
 // ==========================================

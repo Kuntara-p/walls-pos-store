@@ -2333,7 +2333,7 @@
   </div>
 
   <!-- Beautiful Custom Confirmation Dialog Modal -->
-  <div id="custom-confirm-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
+  <div id="custom-confirm-modal" class="fixed inset-0 z-[70] bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-4">
     <div class="bg-white rounded-3xl max-w-sm w-full p-6 shadow-2xl space-y-4 animate-scaleUp text-center border border-slate-100">
       <div id="confirm-modal-icon-container" class="w-14 h-14 rounded-2xl bg-rose-100 text-rose-600 flex items-center justify-center text-2xl mx-auto shadow-inner">
         <i id="confirm-modal-icon" class="fa-solid fa-trash-can"></i>
@@ -2636,16 +2636,32 @@
 
       <!-- Footer -->
       <div class="p-4 border-t border-slate-200 bg-slate-50 flex items-center justify-between gap-2 shrink-0 text-xs">
-        <div class="flex items-center gap-2">
+        <!-- Normal buttons -->
+        <div id="dir-visit-footer-normal" class="flex items-center gap-2">
           <button type="button" onclick="refreshDirectorVisitModal()" class="px-3 py-2 bg-white hover:bg-slate-100 text-slate-700 font-bold rounded-xl border border-slate-200 transition flex items-center gap-1.5 cursor-pointer shadow-2xs">
             <i class="fa-solid fa-rotate text-teal-600"></i>
             <span>อัปเดตข้อมูล</span>
           </button>
-          <button type="button" onclick="clearDirectorVisitHistory()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl border border-rose-200 transition flex items-center gap-1.5 cursor-pointer">
+          <button type="button" onclick="askClearDirectorVisitHistory()" class="px-3 py-2 bg-rose-50 hover:bg-rose-100 text-rose-600 font-bold rounded-xl border border-rose-200 transition flex items-center gap-1.5 cursor-pointer">
             <i class="fa-solid fa-trash-can"></i>
             <span>ล้างประวัติ</span>
           </button>
         </div>
+
+        <!-- Inline Confirm container (no pop-up overlap) -->
+        <div id="dir-visit-footer-confirm" class="hidden flex items-center gap-2 bg-rose-50/90 py-1 px-2.5 rounded-2xl border border-rose-200 animate-scaleUp">
+          <span class="text-[11px] font-bold text-rose-700 flex items-center gap-1">
+            <i class="fa-solid fa-triangle-exclamation text-rose-500"></i>
+            <span>ยืนยันล้างประวัติ ผอ.?</span>
+          </span>
+          <button type="button" onclick="executeClearDirectorVisitHistory()" class="px-3 py-1.5 bg-rose-600 hover:bg-rose-700 active:scale-95 text-white font-bold rounded-xl transition text-[11px] cursor-pointer shadow-xs">
+            ยืนยันล้าง
+          </button>
+          <button type="button" onclick="cancelClearDirectorVisitHistory()" class="px-2.5 py-1.5 bg-white hover:bg-slate-100 active:scale-95 text-slate-700 font-bold rounded-xl border border-slate-300 transition text-[11px] cursor-pointer">
+            ยกเลิก
+          </button>
+        </div>
+
         <button type="button" onclick="closeModal('director-visit-history-modal')" class="px-5 py-2 bg-slate-800 hover:bg-slate-900 text-white font-bold rounded-xl transition cursor-pointer">
           ปิดหน้าต่าง
         </button>
@@ -2657,6 +2673,6 @@
   <div id="toast-container" class="fixed top-5 left-1/2 -translate-x-1/2 z-50 flex flex-col space-y-2 pointer-events-none w-11/12 max-w-md"></div>
 
   <!-- Application Logic -->
-  <script src="app.js?v=2.4"></script>
+  <script src="app.js?v=2.5"></script>
 </body>
 </html>
